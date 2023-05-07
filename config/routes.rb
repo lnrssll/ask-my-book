@@ -10,6 +10,13 @@ Rails.application.routes.draw do
       delete 'logout', to: 'sessions#destroy'
 
       get 'me', to: 'sessions#show'
+
+      # resources :documents, only: [:index, :show, :update]
+      get 'docs', to: 'documents#index'
+      post 'docs', to: 'documents#create'
+
+      get 'docs/:id', to: 'documents#show'
+      delete 'docs/:id', to: 'documents#destroy'
     end
   end
 

@@ -7,6 +7,8 @@ class User < ApplicationRecord
 
   validates :email, format: {with: URI::MailTo::EMAIL_REGEXP}, presence: true, uniqueness: true
 
+  has_many :documents, dependent: :destroy
+
   private
 
   def downcase_email
