@@ -1,7 +1,6 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 
-import AskMyBook, { homeLoader } from "./AskMyBook";
+import Admin, { adminLoader } from "./Admin";
 import { Signup, signupAction } from "./Signup";
 import { Deactivate, deactivateAction } from "./Deactivate";
 import { Login, loginAction } from "./Login";
@@ -9,14 +8,14 @@ import { Logout, logoutAction } from "./Logout";
 
 export default [
   {
-    path: "/",
-    id: "root",
-    element: <AskMyBook />,
-    loader: homeLoader,
+    path: "/admin",
+    id: "admin",
+    loader: adminLoader,
+    element: <Admin />,
     children: [
       {
         index: true,
-        loader: homeLoader,
+        loader: adminLoader,
         element: <div>hello</div>,
       },
       {

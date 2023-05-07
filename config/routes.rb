@@ -13,6 +13,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get "admin", to: "admin#index"
+  get "admin/*path", to: redirect("/admin")
   get '*path', to: redirect("/"), constraints: lambda { |req| !req.path.starts_with?("/api") }
 
   # Defines the root path route ("/")

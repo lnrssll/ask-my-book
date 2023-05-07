@@ -1,13 +1,9 @@
 import React from "react";
-import style from "./AskMyBook.module.css";
 import { Outlet, Link, redirect, useLoaderData } from "react-router-dom";
+import style from "./Admin.module.css";
 import ReactOnRails from "react-on-rails";
 
-interface MeProps {
-  email: string;
-}
-
-export const homeLoader = async () => {
+export const adminLoader = async () => {
   const headers = ReactOnRails.authenticityHeaders({});
   const url = "/api/v1/me";
   const res = await fetch(url, {
@@ -24,19 +20,24 @@ export const homeLoader = async () => {
   }
 };
 
-const AskMyBook = () => {
-  const { email } = useLoaderData() as MeProps;
+interface LoaderProps {
+  email: string;
+}
+
+const Admin = () => {
+  const { email } = useLoaderData() as LoaderProps;
+
   return (
     <div className={style.main}>
       <div className={style.horizontal}>
         <div className={style.flexbox}>
-          <Link to="/">
-            <h3>AskMyBook</h3>
+          <Link to="/admin">
+            <h3>Admin Panel</h3>
           </Link>
           <div>logged in as {email}</div>
         </div>
         <div className={style.flexbox}>
-          <a href="/admin">Admin Panel</a>
+          <a href="/">Normal View</a>
           <Link to="logout">Logout</Link>
           <Link to="deactivate">Deactivate</Link>
         </div>
@@ -47,4 +48,4 @@ const AskMyBook = () => {
   );
 };
 
-export default AskMyBook;
+export default Admin;
