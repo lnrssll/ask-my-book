@@ -36,10 +36,15 @@ const Admin = () => {
           </Link>
           <div>logged in as {email}</div>
         </div>
-        <div className={style.flexbox}>
-          <a href="/">Normal View</a>
-          <Link to="logout">Logout</Link>
-          <Link to="deactivate">Deactivate</Link>
+        <div className={style.horizontal}>
+          <div className={style.flexbox}>
+            <Link to="upload">Upload</Link>
+          </div>
+          <div className={style.flexbox}>
+            <a href="/">Normal View</a>
+            <Link to="logout">Logout</Link>
+            <Link to="deactivate">Deactivate</Link>
+          </div>
         </div>
       </div>
       <hr />

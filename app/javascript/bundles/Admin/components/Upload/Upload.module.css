@@ -1,14 +1,7 @@
-.main {
-  width: 100%;
-  min-height: 100vh;
-}
-
 .horizontal {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .flexbox {
@@ -19,5 +12,4 @@
   flex: 1;
   height: 100%;
   gap: 1rem;
-  min-width: 200px;
 }
