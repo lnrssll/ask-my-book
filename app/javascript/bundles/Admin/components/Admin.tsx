@@ -39,6 +39,7 @@ const Admin = () => {
         <div className={style.horizontal}>
           <div className={style.flexbox}>
             <Link to="upload">Upload</Link>
+            <Link to="docs">Documents</Link>
           </div>
           <div className={style.flexbox}>
             <a href="/">Normal View</a>

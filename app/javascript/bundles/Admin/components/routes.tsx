@@ -5,7 +5,9 @@ import { Signup, signupAction } from "./Signup";
 import { Deactivate, deactivateAction } from "./Deactivate";
 import { Login, loginAction } from "./Login";
 import { Logout, logoutAction } from "./Logout";
+
 import { Upload, uploadAction } from "./Upload";
+import { Docs, docsLoader } from "./Docs";
 
 export default [
   {
@@ -43,6 +45,11 @@ export default [
         path: "upload",
         action: uploadAction,
         element: <Upload />,
+      },
+      {
+        path: "docs",
+        loader: docsLoader,
+        element: <Docs />,
       },
     ],
   },
