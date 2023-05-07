@@ -1,4 +1,5 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
 import Admin, { adminLoader } from "./Admin";
 import { Signup, signupAction } from "./Signup";
@@ -8,6 +9,7 @@ import { Logout, logoutAction } from "./Logout";
 
 import { Upload, uploadAction } from "./Upload";
 import { Docs, docsLoader } from "./Docs";
+import { Doc, docLoader, docAction } from "./Docs/Doc";
 
 export default [
   {
@@ -49,7 +51,29 @@ export default [
       {
         path: "docs",
         loader: docsLoader,
-        element: <Docs />,
+        element: <Outlet />,
+        children: [
+          {
+            index: true,
+            element: <Docs />,
+            loader: docsLoader,
+          },
+          {
+            path: ":id",
+            action: docAction,
+            loader: docLoader,
+            element: <Outlet />,
+            children: [
+              {
+                index: true,
+                loader: docLoader,
+                action: docAction,
+                id: "doc",
+                element: <Doc />,
+              },
+            ],
+          },
+        ],
       },
     ],
   },

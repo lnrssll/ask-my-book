@@ -6,7 +6,7 @@ import ReactOnRails from "react-on-rails";
 
 export const uploadAction: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
-  const url = "/api/v1/upload";
+  const url = "/api/v1/docs";
   const headers = ReactOnRails.authenticityHeaders({});
   const res = await fetch(url, {
     headers,
