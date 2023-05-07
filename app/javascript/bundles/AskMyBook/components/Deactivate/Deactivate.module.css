@@ -13,3 +13,12 @@
   height: 100%;
   gap: 1rem;
 }
+
+.danger {
+  color: red;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+}

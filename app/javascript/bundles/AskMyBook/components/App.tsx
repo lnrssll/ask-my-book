@@ -1,6 +1,9 @@
 import React from "react";
-import AskMyBook from "./AskMyBook";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-const App = () => <AskMyBook />;
+import routes from "./routes";
+
+const router = createBrowserRouter(routes);
+const App = () => <RouterProvider router={router} />;
 
 export default App;

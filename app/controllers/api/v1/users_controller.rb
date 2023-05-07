@@ -14,8 +14,8 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
-    logout
+    current_user.destroy
+    reset_session
     render json: { message: "User deleted" }, status: 200
   end
 

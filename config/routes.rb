@@ -8,8 +8,12 @@ Rails.application.routes.draw do
 
       post 'login', to: 'sessions#create'
       delete 'logout', to: 'sessions#destroy'
+
+      get 'me', to: 'sessions#show'
     end
   end
+
+  get '*path', to: redirect("/"), constraints: lambda { |req| !req.path.starts_with?("/api") }
 
   # Defines the root path route ("/")
   root "ask_my_book#index"
