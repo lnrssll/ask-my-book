@@ -3,6 +3,7 @@ import { Link, useFetcher, useLoaderData } from "react-router-dom";
 import type { LoaderFunction } from "react-router-dom";
 import style from "./Docs.module.css";
 import ReactOnRails from "react-on-rails";
+import moment from "moment";
 
 export const docsLoader: LoaderFunction = async () => {
   const headers = ReactOnRails.authenticityHeaders({});
@@ -20,6 +21,10 @@ export interface DocType {
   id: number;
   title: string;
   description: string;
+  author: string;
+
+  start: number;
+  end: number;
 
   created_at: string;
   updated_at: string;
@@ -37,8 +42,8 @@ const Docs = () => {
           <div className={style.horizontal} key={doc.id}>
             <Link to={String(doc.id)}>
               <h2>{doc.title}</h2>
-              <p>{doc.description}</p>
-              <p>{doc.created_at}</p>
+              {doc.author && <h3>By {doc.author}</h3>}
+              <div>{moment(doc.created_at).fromNow()}</div>
             </Link>
             <fetcher.Form method="delete" action={`/admin/docs/${doc.id}`}>
               <button type="submit" className={style.danger}>

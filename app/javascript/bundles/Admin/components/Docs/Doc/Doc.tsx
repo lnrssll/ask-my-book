@@ -2,6 +2,7 @@ import React from "react";
 import { redirect, useFetcher, useLoaderData } from "react-router-dom";
 import type { LoaderFunction, ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
+import moment from "moment";
 
 import style from "./Doc.module.css";
 import type { DocType } from "../Docs";
@@ -34,14 +35,19 @@ export const docAction: ActionFunction = async ({ request, params }) => {
 };
 
 const DocView = () => {
-  const { title, description, created_at } = useLoaderData() as DocType;
+  const { title, description, author, start, end, created_at } =
+    useLoaderData() as DocType;
   const fetcher = useFetcher();
 
   return (
     <div className={style.flexbox}>
       <h1>{title}</h1>
-      <h2>{created_at}</h2>
-      {description && <p>{description}</p>}
+      {author && <h3>By {author}</h3>}
+      <div>{moment(created_at).fromNow()}</div>
+      {description && <div>{description}</div>}
+      <div>
+        Pages {start}-{end}
+      </div>
       <fetcher.Form method="delete">
         <button type="submit" className={style.danger}>
           Delete

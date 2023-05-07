@@ -31,7 +31,7 @@ class Api::V1::DocumentsController < ApplicationController
   private
 
   def document_params
-    params.require(:document).permit(:title, :description, :author, :file)
+    params.require(:document).permit(:title, :description, :author, :file, :start, :end)
   end
 
   def documents_json
