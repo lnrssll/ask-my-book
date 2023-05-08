@@ -68,6 +68,11 @@ const DocView = () => {
       <div>
         Pages {start}-{end}
       </div>
+      <fetcher.Form method="patch">
+        <button type="submit" className={style.danger}>
+          Go Live
+        </button>
+      </fetcher.Form>
       <fetcher.Form method="delete">
         <button type="submit" className={style.danger}>
           Delete

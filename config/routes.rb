@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
       get 'docs/:id', to: 'documents#show'
       delete 'docs/:id', to: 'documents#destroy'
+      patch 'docs/:id', to: 'documents#update'
 
       post 'docs/:id/chunk', to: 'documents#chunk'
       patch 'docs/:id/embed', to: 'documents#embed'

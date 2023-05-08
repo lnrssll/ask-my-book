@@ -32,6 +32,23 @@ class Api::V1::DocumentsController < ApplicationController
     render json: { message: "Document deleted" }, status: 200
   end
 
+  # only manual update is to ready up
+  def update
+    @user = current_user
+    @document = @user.documents.find(params[:id])
+    if @document.ready?
+      if @document.trees.present?
+        @document.update(ready: true)
+        render json: { message: "Document ready" }, status: 200
+      else
+        render json: { message: "Document not ready to go live" }, status: 200
+      end
+    else
+      @document.update(ready: false)
+      render json: { message: "Document not ready" }, status: 200
+    end
+  end
+
   def chunk
     @user = current_user
     @document = @user.documents.find(params[:id])
@@ -42,7 +59,7 @@ class Api::V1::DocumentsController < ApplicationController
     @document.mean.purge if @document.mean.attached?
     @document.transformer.purge if @document.transformer.attached?
     @document.singular_values.purge if @document.singular_values.attached?
-    @document.update(embedded: false, variance: nil, components: nil, trees: nil)
+    @document.update(embedded: false, variance: nil, components: nil, trees: nil, ready: false)
 
     @document.file.open do |file|
       reader = PDF::Reader.new(file)
@@ -128,7 +145,7 @@ class Api::V1::DocumentsController < ApplicationController
     @document.singular_values.purge if @document.singular_values.attached?
 
     # all downstream processes must be recomputed
-    @document.update(trees: nil)
+    @document.update(trees: nil, ready: false)
 
     variance = 90
     if @document.variance != nil
