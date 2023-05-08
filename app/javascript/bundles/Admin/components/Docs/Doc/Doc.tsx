@@ -12,7 +12,6 @@ import { Embed } from "./Embed";
 import { Decompose } from "./Decompose";
 import { Build } from "./Build";
 import { Classify } from "./Classify";
-import { Search } from "./Search";
 
 export const docLoader: LoaderFunction = async ({ params }) => {
   const id = params.id;

@@ -1,11 +1,12 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 
 import AskMyBook, { homeLoader } from "./AskMyBook";
 import { Signup, signupAction } from "./Signup";
 import { Deactivate, deactivateAction } from "./Deactivate";
 import { Login, loginAction } from "./Login";
 import { Logout, logoutAction } from "./Logout";
+import { Books, booksLoader } from "./Books";
+import { Ask, askAction, askLoader } from "./Ask";
 
 export default [
   {
@@ -16,8 +17,8 @@ export default [
     children: [
       {
         index: true,
-        loader: homeLoader,
-        element: <div>hello</div>,
+        loader: booksLoader,
+        element: <Books />,
       },
       {
         path: "signup",
@@ -38,6 +39,12 @@ export default [
         path: "deactivate",
         action: deactivateAction,
         element: <Deactivate />,
+      },
+      {
+        path: "ask/:id",
+        element: <Ask />,
+        action: askAction,
+        loader: askLoader,
       },
     ],
   },
