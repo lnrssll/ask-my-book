@@ -38,6 +38,12 @@ class Api::V1::DocumentsController < ApplicationController
 
     @document.chunks.destroy_all
 
+    # all downstream processes must be recomputed
+    @document.mean.purge if @document.mean.attached?
+    @document.transformer.purge if @document.transformer.attached?
+    @document.singular_values.purge if @document.singular_values.attached?
+    @document.update(embedded: false, variance: nil, components: nil, trees: nil)
+
     @document.file.open do |file|
       reader = PDF::Reader.new(file)
       if @document.end > reader.page_count
@@ -120,6 +126,9 @@ class Api::V1::DocumentsController < ApplicationController
     @document.mean.purge if @document.mean.attached?
     @document.transformer.purge if @document.transformer.attached?
     @document.singular_values.purge if @document.singular_values.attached?
+
+    # all downstream processes must be recomputed
+    @document.update(trees: nil)
 
     variance = 90
     if @document.variance != nil

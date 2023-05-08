@@ -45,12 +45,15 @@ const DocView = () => {
     id,
     title,
     description,
-    questions,
-    question_weights,
     author,
     start,
     end,
     created_at,
+    questions,
+    question_weights,
+    chunkCount,
+    embedded,
+    components,
   } = useLoaderData() as DocType & QuestionsType;
   const fetcher = useFetcher();
 
@@ -77,9 +80,9 @@ const DocView = () => {
         )}
       </div>
       <Chunk />
-      <Embed />
-      <Decompose />
-      <Build />
+      {chunkCount > 0 && <Embed />}
+      {embedded && <Decompose />}
+      {!!components && <Build />}
     </div>
   );
 };
