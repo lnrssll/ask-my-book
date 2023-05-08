@@ -28,6 +28,9 @@ export interface DocType {
 
   embedded: boolean;
 
+  components: number;
+  variance: number;
+
   start: number;
   end: number;
 

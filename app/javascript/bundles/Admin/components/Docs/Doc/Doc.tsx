@@ -8,6 +8,7 @@ import style from "./Doc.module.css";
 import type { DocType } from "../Docs";
 import { Chunk } from "./Chunk";
 import { Embed } from "./Embed";
+import { Decompose } from "./Decompose";
 
 export const docLoader: LoaderFunction = async ({ params }) => {
   const id = params.id;
@@ -57,6 +58,7 @@ const DocView = () => {
       </fetcher.Form>
       <Chunk />
       <Embed />
+      <Decompose />
     </div>
   );
 };
