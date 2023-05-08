@@ -11,7 +11,7 @@ export const embedAction: ActionFunction = async ({ params }) => {
   const headers = ReactOnRails.authenticityHeaders({});
   const res = await fetch(url, {
     headers,
-    method: "POST",
+    method: "PATCH",
   });
   if (res.ok) {
     return res;

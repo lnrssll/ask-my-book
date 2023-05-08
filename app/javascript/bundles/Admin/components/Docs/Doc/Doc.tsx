@@ -7,6 +7,7 @@ import moment from "moment";
 import style from "./Doc.module.css";
 import type { DocType } from "../Docs";
 import { Chunk } from "./Chunk";
+import { Embed } from "./Embed";
 
 export const docLoader: LoaderFunction = async ({ params }) => {
   const id = params.id;

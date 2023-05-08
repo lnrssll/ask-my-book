@@ -11,6 +11,7 @@ import { Upload, uploadAction } from "./Upload";
 import { Docs, docsLoader } from "./Docs";
 import { Doc, docLoader, docAction } from "./Docs/Doc";
 import { chunkAction } from "./Docs/Doc/Chunk";
+import { embedAction } from "./Docs/Doc/Embed";
 
 export default [
   {
@@ -75,6 +76,10 @@ export default [
               {
                 path: "chunk",
                 action: chunkAction,
+              },
+              {
+                path: "embed",
+                action: embedAction,
               },
             ],
           },

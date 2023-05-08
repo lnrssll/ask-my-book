@@ -26,6 +26,8 @@ export interface DocType {
 
   chunkCount: number;
 
+  embedded: boolean;
+
   start: number;
   end: number;
 
