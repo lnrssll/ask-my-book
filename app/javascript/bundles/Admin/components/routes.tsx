@@ -13,6 +13,7 @@ import { Doc, docLoader, docAction } from "./Docs/Doc";
 import { chunkAction } from "./Docs/Doc/Chunk";
 import { embedAction } from "./Docs/Doc/Embed";
 import { decomposeAction } from "./Docs/Doc/Decompose";
+import { buildAction } from "./Docs/Doc/Build";
 
 export default [
   {
@@ -85,6 +86,10 @@ export default [
               {
                 path: "decompose",
                 action: decomposeAction,
+              },
+              {
+                path: "build",
+                action: buildAction,
               },
             ],
           },

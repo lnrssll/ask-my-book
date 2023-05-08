@@ -31,6 +31,8 @@ export interface DocType {
   components: number;
   variance: number;
 
+  trees: number;
+
   start: number;
   end: number;
 

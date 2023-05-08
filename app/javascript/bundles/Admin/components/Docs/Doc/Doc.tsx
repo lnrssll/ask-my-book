@@ -9,6 +9,7 @@ import type { DocType } from "../Docs";
 import { Chunk } from "./Chunk";
 import { Embed } from "./Embed";
 import { Decompose } from "./Decompose";
+import { Build } from "./Build";
 
 export const docLoader: LoaderFunction = async ({ params }) => {
   const id = params.id;
@@ -59,6 +60,7 @@ const DocView = () => {
       <Chunk />
       <Embed />
       <Decompose />
+      <Build />
     </div>
   );
 };
