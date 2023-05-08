@@ -54,6 +54,7 @@ const DocView = () => {
           Delete
         </button>
       </fetcher.Form>
+      <Chunk />
     </div>
   );
 };
