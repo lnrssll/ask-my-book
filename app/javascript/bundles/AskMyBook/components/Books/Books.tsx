@@ -31,7 +31,7 @@ const Books = () => {
     <div className={style.flexbox}>
       {!!books.length &&
         books.map((book) => (
-          <Link to={`ask/${book.id}`} key={book.id}>
+          <Link to={`questions/${book.id}`} key={book.id}>
             <h2>{book.title}</h2>
             <h3>{book.author}</h3>
             <p>{book.description}</p>

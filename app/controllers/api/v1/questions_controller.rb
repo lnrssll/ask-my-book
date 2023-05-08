@@ -31,6 +31,74 @@ class Api::V1::QuestionsController < ApplicationController
     render json: doc_with_questions, status: 200
   end
 
+  def answer
+    @document = Document.find(params[:id])
+
+    # get a random question
+    @question = @document.questions.sample
+    puts @question.text
+    puts @question.answer
+    # need to add 11labs api call here
+    # and add ask count
+    render json: @question, status: 200
+  end
+
+  def ask
+    @document = Document.find(params[:id])
+    text = params[:question]
+
+    @question = @document.questions.find_by(text: text)
+    if !@question.nil?
+      render json: @question, status: 200
+    end
+
+    ada = get_embedding(text)
+    if ada.nil?
+      puts "embedding failed"
+      render json: { error: "embedding failed" }, status: 500
+      return
+    end
+
+    embedding = ada["data"][0]["embedding"]
+    embedding = Numo::DFloat.cast(embedding)
+    puts embedding
+
+    # project
+    puts "downloading NArrays"
+    json_mean = @document.mean.download
+    mean = JSON.parse(json_mean)
+    mean = Numo::DFloat.cast(mean)
+    json_transformer = @document.transformer.download
+    transformer = JSON.parse(json_transformer)
+    transformer = Numo::DFloat.cast(transformer)
+
+    puts "projecting"
+    projected = (embedding - mean).dot(transformer.transpose)
+
+    if @document.question_weights.length > 0
+      puts "getting weights"
+      projected[dequestioner] = 0
+      puts projected
+    end
+
+    puts "getting nearest"
+    filename = @document.id.to_s + ".ann"
+    path = Rails.root.join("storage", "index", filename)
+
+    neighbors = 10
+    dimensions = @document.components
+
+    annoy = Annoy::AnnoyIndex.new(n_features: dimensions, metric: 'angular')
+    annoy.load(path.to_s)
+    results = annoy.get_nns_by_vector(projected.to_a, neighbors)
+    puts results
+    labels = results.map { |id| @document.chunks.find(id).content }
+    completion = get_chat_completion(labels.to_json, text)
+    puts completion
+    @question = @document.questions.create(text: text, answer: completion, embedding: embedding.to_a)
+    render json: @question, status: 200
+  end
+
   def embed
     @user = current_user
     @document = @user.documents.find(params[:id])

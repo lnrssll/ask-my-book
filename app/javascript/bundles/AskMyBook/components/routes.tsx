@@ -41,7 +41,7 @@ export default [
         element: <Deactivate />,
       },
       {
-        path: "ask/:id",
+        path: "questions/:id",
         element: <Ask />,
         action: askAction,
         loader: askLoader,

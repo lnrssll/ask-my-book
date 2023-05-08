@@ -53,6 +53,45 @@ module Utils
     end
   end
 
+  def get_chat_completion(source, question)
+    prompt = "You are #{@document.author}, the author of #{@document.title}, doing a public Q&A session. You will be provided with source material from your book as a JSON file, which you are invited to summarize, paraphrase, and quote directly in your response. You may reference no more than one passage, but only if it is particularly important to your answer. Do NOT use quotes that are not present in the source material JSON. Please keep it brief, but be thoughtful."
+    url = URI("https://api.openai.com/v1/chat/completions")
+    puts "calling openai chatgpt"
+    headers = {
+      "Content-Type" => "application/json",
+      "Authorization" => "Bearer #{ENV['OPENAI_API_KEY']}",
+    }
+    messages = [
+      {
+        "role" => "system",
+        "content" => prompt,
+      },
+      {
+        "role" => "system",
+        "content" => "Source:\n" + source,
+      },
+      {
+        "role" => "user",
+        "content" => question,
+      },
+    ]
+    data = {
+      "model" => "gpt-3.5-turbo",
+      "messages" => messages,
+      # "user" => current_user.email,
+      "temperature" => 0.1,
+    }
+    response = Net::HTTP.post(url, data.to_json, headers)
+    if response.kind_of? Net::HTTPSuccess
+      parsed = JSON.parse(response.body)
+      puts parsed
+      return parsed["choices"][0]["message"]["content"]
+    else
+      puts response.body
+      return nil
+    end
+  end
+
   def get_matrix(with = nil)
     puts "downloading NArrays"
     json_mean = @document.mean.download
@@ -103,7 +142,9 @@ module Utils
 
   def dequestioner(kill_dims = 10)
     weights = @document.question_weights
-    question_dims = weights.abs.argsort.reverse[0..kill_dims - 1]
+    weights = Numo::DFloat.cast(weights)
+    question_dims = weights.abs.sort_index.reverse[0..kill_dims - 1]
+    return question_dims
   end
 
 end

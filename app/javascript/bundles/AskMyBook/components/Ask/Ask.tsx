@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import type { MouseEvent } from "react";
 import style from "./Ask.module.css";
 import { Form, redirect, useFetcher, useLoaderData } from "react-router-dom";
@@ -55,8 +55,16 @@ const Ask = () => {
     default_question: defaultQuestion,
   } = useLoaderData() as BookType;
   const [question, setQuestion] = useState(defaultQuestion);
+  const [answer, setAnswer] = useState("");
   const buttonRef = useRef<HTMLButtonElement>(null);
   const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (fetcher.data) {
+      setQuestion(fetcher.data.text);
+      setAnswer(fetcher.data.answer);
+    }
+  }, [fetcher.data]);
 
   const handleAsk = (e: MouseEvent) => {
     e.preventDefault();
@@ -65,20 +73,21 @@ const Ask = () => {
 
   return (
     <div className={style.none}>
-      <h1>Ask My Book</h1>
-      <h2>{title}</h2>
-      <h3>{author}</h3>
-      <div>{description}</div>
-      <div>{defaultQuestion}</div>
+      <div className={style.flexbox}>
+        <h1>Ask My Book</h1>
+        <h2>{title}</h2>
+        {author && <h3>{author}</h3>}
+        {description && <div>{description}</div>}
+      </div>
       <hr />
       <div className={style.flexbox}>
         <fetcher.Form className={style.flexbox} method="post">
           <label htmlFor="question" className={style.flexbox}>
-            <p>
+            <div className={style.explanation}>
               {
                 "This is an experiment in using AI to make my book's content more accessible. Ask a question and AI'll answer it in real-time:"
               }
-            </p>
+            </div>
             <textarea
               id="question"
               name="question"
@@ -86,18 +95,35 @@ const Ask = () => {
               onChange={(e) => setQuestion(e.target.value)}
             />
           </label>
+          {answer && (
+            <div className={style.answer}>
+              <div>Answer: {answer}</div>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setAnswer("");
+                  setQuestion("");
+                }}
+              >
+                Ask Another Question
+              </button>
+            </div>
+          )}
           <div className={style.horizontal}>
             <button ref={buttonRef} hidden type="submit">
               Ask Question
             </button>
           </div>
         </fetcher.Form>
-        <div className={style.horizontal}>
-          <button onClick={handleAsk}>Ask Question</button>
-          <fetcher.Form method="get">
-            <button type="submit">{"I'm feeling lucky"}</button>
-          </fetcher.Form>
-        </div>
+        {!answer && (
+          <div className={style.horizontal}>
+            <button onClick={handleAsk}>Ask Question</button>
+            <fetcher.Form method="patch">
+              <button type="submit">{"I'm feeling lucky"}</button>
+            </fetcher.Form>
+          </div>
+        )}
       </div>
     </div>
   );

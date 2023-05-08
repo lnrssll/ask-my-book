@@ -17,6 +17,27 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  height: 100%;
+  gap: 1rem;
+}
+
+.explanation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: max(50%, 300px);
+  font-size: 1.2rem;
+  font-color: gray;
+  padding: 1rem;
+}
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: max(50%, 300px);
+  font-size: 1.2rem;
+  padding: 1rem;
   gap: 1rem;
 }

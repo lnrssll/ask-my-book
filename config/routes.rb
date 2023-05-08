@@ -33,9 +33,11 @@ Rails.application.routes.draw do
 
       delete 'docs/:id/questions/:question_id', to: 'questions#destroy'
 
-      post 'docs/:id/ask', to: 'documents#ask'
       get 'books', to: 'books#index'
       get 'books/:id', to: 'books#show'
+
+      post 'questions/:id', to: 'questions#ask'
+      patch 'questions/:id', to: 'questions#answer'
     end
   end
 
