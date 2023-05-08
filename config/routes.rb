@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       patch 'docs/:id/decompose', to: 'documents#decompose'
       patch 'docs/:id/build', to: 'documents#build'
       patch 'docs/:id/classify', to: 'documents#classify'
+      patch 'docs/:id/search', to: 'documents#search'
 
       get 'docs/:id/questions', to: 'questions#index'
       post 'docs/:id/questions', to: 'questions#create'

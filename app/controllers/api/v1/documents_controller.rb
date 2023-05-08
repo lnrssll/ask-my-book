@@ -251,6 +251,42 @@ class Api::V1::DocumentsController < ApplicationController
     render json: { weights: weights.to_a }, status: 200
   end
 
+  # purely for testing purposes
+  def search
+    start_time = Time.now
+    @user = current_user
+    @document = @user.documents.find(params[:id])
+
+    item = nil
+    if params.has_key?(:item)
+      item = params[:item]
+    else
+      chunks_ids = @document.chunks.map { |chunk| chunk.id }
+      item = chunks_ids.sample
+    end
+
+    filename = @document.id.to_s + ".ann"
+    path = Rails.root.join("storage", "index", filename)
+
+    neighbors = 10
+
+    dimensions = @document.components
+
+    annoy = Annoy::AnnoyIndex.new(n_features: dimensions, metric: 'angular')
+    annoy.load(path.to_s)
+
+    result = annoy.get_nns_by_item(item, neighbors)
+    average = result.sum / result.length
+    variance = result.map { |x| (x - average) ** 2 }.sum / result.length
+    sigma = Math.sqrt(variance)
+    puts result
+    labels = result.map { |id| @document.chunks.find(id).content }
+    end_time = Time.now
+    elapsed = end_time - start_time
+    elapsed = elapsed * 1000  # convert to milliseconds
+    puts "search time: #{elapsed}"
+    render json: { result: result, labels: labels, time: elapsed.to_i, average: average, sigma: sigma }, status: 200
+  end
 
   private
 
