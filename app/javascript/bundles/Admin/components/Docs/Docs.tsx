@@ -1,9 +1,10 @@
 import React from "react";
 import { Link, useFetcher, useLoaderData } from "react-router-dom";
 import type { LoaderFunction } from "react-router-dom";
-import style from "./Docs.module.css";
 import ReactOnRails from "react-on-rails";
 import moment from "moment";
+
+import style from "./Docs.module.css";
 
 export const docsLoader: LoaderFunction = async () => {
   const headers = ReactOnRails.authenticityHeaders({});
@@ -22,6 +23,8 @@ export interface DocType {
   title: string;
   description: string;
   author: string;
+
+  chunkCount: number;
 
   start: number;
   end: number;

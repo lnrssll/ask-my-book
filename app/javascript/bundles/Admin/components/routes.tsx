@@ -10,6 +10,7 @@ import { Logout, logoutAction } from "./Logout";
 import { Upload, uploadAction } from "./Upload";
 import { Docs, docsLoader } from "./Docs";
 import { Doc, docLoader, docAction } from "./Docs/Doc";
+import { chunkAction } from "./Docs/Doc/Chunk";
 
 export default [
   {
@@ -70,6 +71,10 @@ export default [
                 action: docAction,
                 id: "doc",
                 element: <Doc />,
+              },
+              {
+                path: "chunk",
+                action: chunkAction,
               },
             ],
           },
