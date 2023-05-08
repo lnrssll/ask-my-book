@@ -1,3 +1,9 @@
 body {
   margin: 0;
 }
+
+textarea {
+  resize: none;
+  width: 350px;
+  height: 200px;
+}

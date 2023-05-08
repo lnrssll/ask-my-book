@@ -1,4 +1,6 @@
 class Api::V1::DocumentsController < ApplicationController
+  include Utils
+
   def index
     @user = current_user
     @documents = @user.documents
@@ -9,7 +11,8 @@ class Api::V1::DocumentsController < ApplicationController
     @user = current_user
     @document = @user.documents.find(params[:id])
     chunk_count = @document.chunks.count
-    render json: document_json.merge(chunkCount: chunk_count), status: 200
+    @questions = @document.questions
+    render json: doc_with_questions.merge(chunkCount: chunk_count), status: 200
   end
 
   def create
@@ -219,18 +222,31 @@ class Api::V1::DocumentsController < ApplicationController
     render json: { message: "Annoy index saved" }, status: 200
   end
 
+  def classify
+    @user = current_user
+    @document = @user.documents.find(params[:id])
+    @questions = @document.questions
+    question_embeddings = @questions.map { |question| question.embedding }
+    x = get_matrix(question_embeddings)
+    y = Numo::DFloat.zeros(x.shape[0])
+    y[0..question_embeddings.length - 1] = 1
+    if y.sum != question_embeddings.length
+      render json: { error: "y.sum != question_embeddings.length" }, status: 500
+      return
+    end
+    estimator = Rumale::LinearModel::SVC.new(reg_param: 0.1, tol: 1e-6)
+    estimator.fit(x, y)
+    weights = estimator.weight_vec
+    @document.update(question_weights: weights.to_a)
+    # TODO maybe add classification status to questions too
+    render json: { weights: weights.to_a }, status: 200
+  end
+
+
   private
 
   def document_params
     params.require(:document).permit(:title, :description, :author, :file, :start, :end)
-  end
-
-  def documents_json
-    @documents.map { |document| document.attributes.except("file") }
-  end
-
-  def document_json
-    @document.attributes.except('file')
   end
 
   def is_valid_chunk?(text)
@@ -257,26 +273,4 @@ class Api::V1::DocumentsController < ApplicationController
     return [sentences[0..half].join("."), sentences[half..sentences.length].join(".")]
   end
 
-  def get_embedding(text)
-    url = URI("https://api.openai.com/v1/embeddings")
-    puts "calling openai ada"
-    headers = {
-      "Content-Type" => "application/json",
-      "Authorization" => "Bearer #{ENV['OPENAI_API_KEY']}",
-    }
-    data = {
-      "input" => text,
-      "model" => "text-embedding-ada-002",
-      # "user" => current_user.email,
-    }
-    response = Net::HTTP.post(url, data.to_json, headers)
-    if response.kind_of? Net::HTTPSuccess
-      parsed = JSON.parse(response.body)
-      puts parsed
-      return parsed
-    else
-      puts response.body
-      return nil
-    end
-  end
 end

@@ -14,6 +14,9 @@ import { chunkAction } from "./Docs/Doc/Chunk";
 import { embedAction } from "./Docs/Doc/Embed";
 import { decomposeAction } from "./Docs/Doc/Decompose";
 import { buildAction } from "./Docs/Doc/Build";
+import { classifyAction } from "./Docs/Doc/Classify";
+import { Questions, questionsAction } from "./Docs/Doc/Questions";
+import { questionAction } from "./Docs/Doc/Questions/Question";
 
 export default [
   {
@@ -66,13 +69,13 @@ export default [
             path: ":id",
             action: docAction,
             loader: docLoader,
+            id: "doc",
             element: <Outlet />,
             children: [
               {
                 index: true,
                 loader: docLoader,
                 action: docAction,
-                id: "doc",
                 element: <Doc />,
               },
               {
@@ -90,6 +93,21 @@ export default [
               {
                 path: "build",
                 action: buildAction,
+              },
+              {
+                path: "classify",
+                action: classifyAction,
+              },
+              {
+                path: "questions",
+                action: questionsAction,
+                element: <Questions />,
+                children: [
+                  {
+                    path: ":questionId",
+                    action: questionAction,
+                  },
+                ],
               },
             ],
           },

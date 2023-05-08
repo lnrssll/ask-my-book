@@ -33,6 +33,8 @@ export interface DocType {
 
   trees: number;
 
+  question_weights: number[];
+
   start: number;
   end: number;
 

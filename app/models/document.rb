@@ -13,4 +13,7 @@ class Document < ApplicationRecord
   validates :end, presence: true
 
   has_many :chunks, dependent: :destroy
+  has_many :questions, dependent: :destroy
+
+  serialize :question_weights, Array
 end

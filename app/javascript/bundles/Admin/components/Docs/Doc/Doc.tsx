@@ -1,15 +1,17 @@
 import React from "react";
-import { redirect, useFetcher, useLoaderData } from "react-router-dom";
+import { Link, redirect, useFetcher, useLoaderData } from "react-router-dom";
 import type { LoaderFunction, ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import moment from "moment";
 
 import style from "./Doc.module.css";
 import type { DocType } from "../Docs";
+import type { QuestionsType } from "./Questions";
 import { Chunk } from "./Chunk";
 import { Embed } from "./Embed";
 import { Decompose } from "./Decompose";
 import { Build } from "./Build";
+import { Classify } from "./Classify";
 
 export const docLoader: LoaderFunction = async ({ params }) => {
   const id = params.id;
@@ -39,8 +41,17 @@ export const docAction: ActionFunction = async ({ request, params }) => {
 };
 
 const DocView = () => {
-  const { title, description, author, start, end, created_at } =
-    useLoaderData() as DocType;
+  const {
+    id,
+    title,
+    description,
+    questions,
+    question_weights,
+    author,
+    start,
+    end,
+    created_at,
+  } = useLoaderData() as DocType & QuestionsType;
   const fetcher = useFetcher();
 
   return (
@@ -57,6 +68,14 @@ const DocView = () => {
           Delete
         </button>
       </fetcher.Form>
+      <div className={style.flexbox}>
+        <Link to={`/admin/docs/${id}/questions`}>Edit Questions</Link>
+        {!!questions.length ? (
+          <Classify weights={question_weights} />
+        ) : (
+          <div>You need to add Questions to create a Question classifier</div>
+        )}
+      </div>
       <Chunk />
       <Embed />
       <Decompose />

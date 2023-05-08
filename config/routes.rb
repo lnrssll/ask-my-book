@@ -22,6 +22,14 @@ Rails.application.routes.draw do
       patch 'docs/:id/embed', to: 'documents#embed'
       patch 'docs/:id/decompose', to: 'documents#decompose'
       patch 'docs/:id/build', to: 'documents#build'
+      patch 'docs/:id/classify', to: 'documents#classify'
+
+      get 'docs/:id/questions', to: 'questions#index'
+      post 'docs/:id/questions', to: 'questions#create'
+      patch 'docs/:id/questions', to: 'questions#embed'
+      delete 'docs/:id/questions', to: 'questions#destroy_all'
+
+      delete 'docs/:id/questions/:question_id', to: 'questions#destroy'
 
     end
   end
