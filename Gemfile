@@ -67,3 +67,5 @@ gem "react_on_rails", "= 13.3"
 gem "shakapacker", "= 6.6"
 
 gem "pdf-reader"
+
+gem 'dotenv-rails', groups: [:development, :test]

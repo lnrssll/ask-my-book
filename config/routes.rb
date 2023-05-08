@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       delete 'docs/:id', to: 'documents#destroy'
 
       post 'docs/:id/chunk', to: 'documents#chunk'
+      patch 'docs/:id/embed', to: 'documents#embed'
 
     end
   end

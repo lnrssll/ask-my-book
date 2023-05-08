@@ -84,6 +84,32 @@ class Api::V1::DocumentsController < ApplicationController
     end
   end
 
+  def embed
+    @user = current_user
+    @document = @user.documents.find(params[:id])
+    @document.chunks.each do |chunk|
+      if chunk.embedding.length == 0
+        ada = get_embedding(chunk.content)
+        if ada == nil
+          puts "embedding failed"
+          render json: { error: "embedding failed" }, status: 500
+          return
+        end
+        total_tokens = ada["usage"]["total_tokens"]
+        cost = total_tokens * 0.0004
+        puts "cost: #{cost}"
+        embedding = ada["data"][0]["embedding"]
+        puts embedding.length
+        puts "success"
+        chunk.update(embedding: embedding)
+      end
+    end
+    puts "checking for completion"
+    embedded = !@document.chunks.any? { |chunk| chunk.embedding.length == 0 }
+    @document.update(embedded: embedded)
+    render json: { message: "embedding complete" }, status: 200
+  end
+
   private
 
   def document_params
@@ -120,5 +146,28 @@ class Api::V1::DocumentsController < ApplicationController
     sentences = text.split(".")
     half = sentences.length / 2
     return [sentences[0..half].join("."), sentences[half..sentences.length].join(".")]
+  end
+
+  def get_embedding(text)
+    url = URI("https://api.openai.com/v1/embeddings")
+    puts "calling openai ada"
+    headers = {
+      "Content-Type" => "application/json",
+      "Authorization" => "Bearer #{ENV['OPENAI_API_KEY']}",
+    }
+    data = {
+      "input" => text,
+      "model" => "text-embedding-ada-002",
+      # "user" => current_user.email,
+    }
+    response = Net::HTTP.post(url, data.to_json, headers)
+    if response.kind_of? Net::HTTPSuccess
+      parsed = JSON.parse(response.body)
+      puts parsed
+      return parsed
+    else
+      puts response.body
+      return nil
+    end
   end
 end

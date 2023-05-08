@@ -56,6 +56,7 @@ const DocView = () => {
         </button>
       </fetcher.Form>
       <Chunk />
+      <Embed />
     </div>
   );
 };
