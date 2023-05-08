@@ -12,6 +12,7 @@ import { Embed } from "./Embed";
 import { Decompose } from "./Decompose";
 import { Build } from "./Build";
 import { Classify } from "./Classify";
+import { Search } from "./Search";
 
 export const docLoader: LoaderFunction = async ({ params }) => {
   const id = params.id;
@@ -54,6 +55,7 @@ const DocView = () => {
     chunkCount,
     embedded,
     components,
+    trees,
   } = useLoaderData() as DocType & QuestionsType;
   const fetcher = useFetcher();
 
@@ -79,6 +81,7 @@ const DocView = () => {
           <div>You need to add Questions to create a Question classifier</div>
         )}
       </div>
+      {!!trees && <Link to="search">Test Search</Link>}
       <Chunk />
       {chunkCount > 0 && <Embed />}
       {embedded && <Decompose />}

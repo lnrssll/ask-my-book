@@ -17,6 +17,7 @@ import { buildAction } from "./Docs/Doc/Build";
 import { classifyAction } from "./Docs/Doc/Classify";
 import { Questions, questionsAction } from "./Docs/Doc/Questions";
 import { questionAction } from "./Docs/Doc/Questions/Question";
+import { Search, searchAction } from "./Docs/Doc/Search";
 
 export default [
   {
@@ -97,6 +98,11 @@ export default [
               {
                 path: "classify",
                 action: classifyAction,
+              },
+              {
+                path: "search",
+                action: searchAction,
+                element: <Search />,
               },
               {
                 path: "questions",

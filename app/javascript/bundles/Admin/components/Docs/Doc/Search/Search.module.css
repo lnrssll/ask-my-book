@@ -1,0 +1,57 @@
+.danger {
+  color: red;
+  background-color: #ffebee;
+  border: 1px solid #ffcdd2;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+}
+
+.horizontal {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.flexbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  gap: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  justify-content: center;
+  align-items: center;
+  grid-gap: 1rem;
+  place-self: center;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+.item {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  gap: 1rem;
+}
+
+.results {
+  width: 100%;
+}
+
+.label {
+  max-width: 350px;
+  text-align: center;
+  word-wrap: break-word;
+}
