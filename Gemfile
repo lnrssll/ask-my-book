@@ -66,6 +66,12 @@ gem "react_on_rails", "= 13.3"
 
 gem "shakapacker", "= 6.6"
 
+# to read pdfs in controllers
 gem "pdf-reader"
 
+# to store api keys
 gem 'dotenv-rails', groups: [:development, :test]
+
+# for linear algebra/ML
+gem 'numo-openblas'
+gem 'rumale'

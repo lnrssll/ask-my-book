@@ -110,6 +110,74 @@ class Api::V1::DocumentsController < ApplicationController
     render json: { message: "embedding complete" }, status: 200
   end
 
+  def decompose
+    @user = current_user
+    @document = @user.documents.find(params[:id])
+
+    @document.mean.purge if @document.mean.attached?
+    @document.transformer.purge if @document.transformer.attached?
+    @document.singular_values.purge if @document.singular_values.attached?
+
+    variance = 90
+    if @document.variance != nil
+      variance = @document.variance
+    else
+      @document.update(variance: variance)
+    end
+
+    chunk_count = @document.chunks.count
+
+    if @document.chunks.any? { |chunk| chunk.embedding.length == 0 }
+      render json: { error: "embedding incomplete" }, status: 500
+      return
+    end
+
+    # doesn't matter which one, just looking for variation
+    sample_chunk = @document.chunks.first
+    dimensions = sample_chunk.embedding.length
+
+    if @document.chunks.any? { |chunk| chunk.embedding.length != dimensions }
+      render json: { error: "embedding dimensions do not match" }, status: 500
+      return
+    end
+
+    matrix = Numo::DFloat.zeros(chunk_count, dimensions)
+
+    @document.chunks.each_with_index do |chunk, i|
+      matrix[i, true] = Numo::DFloat.cast(chunk.embedding)
+    end
+
+    # svd
+    s, u, vt = Numo::Linalg.svd(matrix)
+    goal = s.sum * variance.to_f / 100
+    sum = 0
+    n_components = 0
+    s.each_with_index do |value, i|
+      sum += value
+      if goal - sum < 0.0001 # 0.0001 is an arbitrary tolerance
+        n_components = i
+        break
+      end
+    end
+
+    puts "n_components: #{n_components}"
+
+    # pca dimensionality reduction
+    # (requires openBLAS)
+    decomposer = Rumale::Decomposition::PCA.new(n_components: n_components, solver: 'evd')
+    transformer = decomposer.fit(matrix)
+    proj = transformer.transform(matrix)
+    @document.mean.attach(io: StringIO.new(transformer.mean.to_a.to_json), filename: "mean.json")
+    @document.transformer.attach(io: StringIO.new(transformer.components.to_a.to_json), filename: "transformer.json")
+    @document.singular_values.attach(io: StringIO.new(s.to_a.to_json), filename: "singular_values.json")
+
+    @document.update(components: n_components, variance: variance)
+
+    puts "top #{n_components} components (out of #{s.shape[0]}) explain #{variance}% of the variance"
+
+    render json: document_json, status: 200
+  end
+
   private
 
   def document_params

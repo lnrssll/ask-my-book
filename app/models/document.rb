@@ -1,5 +1,8 @@
 class Document < ApplicationRecord
   has_one_attached :file
+  has_one_attached :mean
+  has_one_attached :transformer
+  has_one_attached :singular_values
 
   belongs_to :user
 

@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
       post 'docs/:id/chunk', to: 'documents#chunk'
       patch 'docs/:id/embed', to: 'documents#embed'
+      patch 'docs/:id/decompose', to: 'documents#decompose'
 
     end
   end
