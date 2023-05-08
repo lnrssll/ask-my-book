@@ -1,4 +1,8 @@
-# README
+# Ask My Book
+
+Full functionality (and then some), without styling or deployment.
+
+Requires OpenBLAS to run Numo::Linalg
 
 This README would normally document whatever steps are necessary to get the
 application up and running.
