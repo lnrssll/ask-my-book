@@ -2,7 +2,7 @@ version: '3'
 services:
   db:
     image: postgres:14.2-alpine
-    container_name: ask-books
+    container_name: ask-books-db
     volumnes:
       - postgres_data:/var/lib/postgresql/data
     command:
@@ -13,7 +13,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
-  demo-web:
+  ask-books:
     build: .
     commnd: "./bin/rails server"
     environment:
