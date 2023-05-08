@@ -49,6 +49,7 @@ const Docs = () => {
   return (
     <div className={style.flexbox}>
       <h1>Docs</h1>
+      <Link to="/admin/upload">Create New</Link>
       {!!docs.length &&
         docs.map((doc) => (
           <div className={style.horizontal} key={doc.id}>

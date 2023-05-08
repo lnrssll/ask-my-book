@@ -7,6 +7,7 @@ import { Deactivate, deactivateAction } from "./Deactivate";
 import { Login, loginAction } from "./Login";
 import { Logout, logoutAction } from "./Logout";
 
+import { Dashboard } from "./Dashboard";
 import { Upload, uploadAction } from "./Upload";
 import { Docs, docsLoader } from "./Docs";
 import { Doc, docLoader, docAction } from "./Docs/Doc";
@@ -29,7 +30,7 @@ export default [
       {
         index: true,
         loader: adminLoader,
-        element: <div>hello</div>,
+        element: <Dashboard />,
       },
       {
         path: "signup",
