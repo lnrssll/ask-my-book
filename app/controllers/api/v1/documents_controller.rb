@@ -178,6 +178,47 @@ class Api::V1::DocumentsController < ApplicationController
     render json: document_json, status: 200
   end
 
+  def build
+    @user = current_user
+    @document = @user.documents.find(params[:id])
+    filename = @document.id.to_s + ".ann"
+
+    path = Rails.root.join("storage", "index", filename)
+    dimensions = @document.components
+
+    trees = 50
+    if @document.trees != nil
+      trees = @document.trees
+    else
+      @document.update(trees: trees)
+    end
+
+    puts "downloading NArrays"
+    json_mean = @document.mean.download
+    mean = JSON.parse(json_mean)
+    mean = Numo::DFloat.cast(mean)
+    json_transformer = @document.transformer.download
+    transformer = JSON.parse(json_transformer)
+    transformer = Numo::DFloat.cast(transformer)
+
+    puts "building index"
+    annoy = Annoy::AnnoyIndex.new(n_features: dimensions, metric: 'angular')
+    @document.chunks.each do |chunk|
+      embedding = chunk.embedding
+      embedding = Numo::DFloat.cast(embedding)
+      embedding = (embedding - mean).dot(transformer.transpose)
+      annoy.add_item(chunk.id, embedding.to_a)
+    end
+    annoy.build(10)
+
+    puts "saving index"
+    annoy.save(path.to_s)
+    @document.index.purge if @document.index.attached?
+    @document.index.attach(io: File.open(path.to_s), filename: filename)
+
+    render json: { message: "Annoy index saved" }, status: 200
+  end
+
   private
 
   def document_params

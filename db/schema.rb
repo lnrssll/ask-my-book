@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_08_014651) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_08_022739) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,6 +68,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_08_014651) do
     t.boolean "embedded"
     t.integer "components"
     t.integer "variance"
+    t.integer "trees"
     t.index ["user_id"], name: "index_documents_on_user_id"
   end
 

@@ -75,3 +75,6 @@ gem 'dotenv-rails', groups: [:development, :test]
 # for linear algebra/ML
 gem 'numo-openblas'
 gem 'rumale'
+
+# for vector search
+gem "annoy-rb"

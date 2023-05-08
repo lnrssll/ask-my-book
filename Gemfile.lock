@@ -70,6 +70,7 @@ GEM
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     afm (0.2.2)
+    annoy-rb (0.7.2)
     bcrypt (3.1.18)
     bindex (0.8.1)
     bootsnap (1.16.0)
@@ -325,6 +326,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  annoy-rb
   bcrypt (~> 3.1.7)
   bootsnap
   capybara
