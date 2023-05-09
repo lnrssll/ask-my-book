@@ -1,6 +1,7 @@
 .main {
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
+  padding: 1rem 0;
 }
 
 .horizontal {
@@ -19,4 +20,13 @@
   flex: 1;
   height: 100%;
   gap: 1rem;
+}
+
+.icon {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  text: black;
+  height: 1.5rem;
+  width: 1.5rem;
 }

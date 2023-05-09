@@ -1,11 +1,8 @@
 import React from "react";
 import style from "./AskMyBook.module.css";
-import { Outlet, Link, redirect, useLoaderData } from "react-router-dom";
+import { Outlet, redirect } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
-
-interface MeProps {
-  email: string;
-}
+import { WrenchScrewdriverIcon } from "@heroicons/react/24/solid";
 
 export const homeLoader = async () => {
   const headers = ReactOnRails.authenticityHeaders({});
@@ -25,23 +22,11 @@ export const homeLoader = async () => {
 };
 
 const AskMyBook = () => {
-  const { email } = useLoaderData() as MeProps;
   return (
     <div className={style.main}>
-      <div className={style.horizontal}>
-        <div className={style.flexbox}>
-          <Link to="/">
-            <h3>AskMyBook</h3>
-          </Link>
-          <div>logged in as {email}</div>
-        </div>
-        <div className={style.flexbox}>
-          <a href="/admin">Admin Panel</a>
-          <Link to="logout">Logout</Link>
-          <Link to="deactivate">Deactivate</Link>
-        </div>
-      </div>
-      <hr />
+      <a href="/admin">
+        <WrenchScrewdriverIcon className={style.icon} />
+      </a>
       <Outlet />
     </div>
   );

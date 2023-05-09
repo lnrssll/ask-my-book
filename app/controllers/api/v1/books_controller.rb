@@ -16,11 +16,11 @@ class Api::V1::BooksController < ApplicationController
   private
 
   def documents_json
-    @documents.map { |document| document.attributes.slice('id', 'title', 'description') }
+    @documents.map { |document| document.attributes.slice('id', 'title', 'author', 'description') }
   end
 
   def document_json
-    @document.attributes.slice('id', 'title', 'description', 'default_question')
+    @document.attributes.slice('id', 'title', 'author', 'description', 'default_question')
   end
 
 end

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import type { MouseEvent } from "react";
 import style from "./Ask.module.css";
-import { Form, redirect, useFetcher, useLoaderData } from "react-router-dom";
+import { redirect, useFetcher, useLoaderData } from "react-router-dom";
 import type { ActionFunction, LoaderFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import { AuthenticityHeaders } from "react-on-rails/node_package/lib/types";
@@ -72,14 +72,10 @@ const Ask = () => {
   };
 
   return (
-    <div className={style.none}>
-      <div className={style.flexbox}>
-        <h1>Ask My Book</h1>
-        <h2>{title}</h2>
-        {author && <h3>{author}</h3>}
-        {description && <div>{description}</div>}
-      </div>
-      <hr />
+    <div className={style.flexbox}>
+      <h2 className={style.bold}>{title}</h2>
+      {author && <h3>By {author}</h3>}
+      {description && <div>{description}</div>}
       <div className={style.flexbox}>
         <fetcher.Form className={style.flexbox} method="post">
           <label htmlFor="question" className={style.flexbox}>
@@ -89,6 +85,7 @@ const Ask = () => {
               }
             </div>
             <textarea
+              disabled={fetcher.state === "submitting"}
               id="question"
               name="question"
               value={question}
@@ -97,8 +94,11 @@ const Ask = () => {
           </label>
           {answer && (
             <div className={style.answer}>
-              <div>Answer: {answer}</div>
+              <div>
+                <span className={style.bold}>Answer:</span> {answer}
+              </div>
               <button
+                className={style.button}
                 type="button"
                 onClick={(e) => {
                   e.preventDefault();
@@ -116,13 +116,21 @@ const Ask = () => {
             </button>
           </div>
         </fetcher.Form>
-        {!answer && (
-          <div className={style.horizontal}>
-            <button onClick={handleAsk}>Ask Question</button>
-            <fetcher.Form method="patch">
-              <button type="submit">{"I'm feeling lucky"}</button>
-            </fetcher.Form>
-          </div>
+        {fetcher.state === "submitting" ? (
+          <div className={style.loading} />
+        ) : (
+          !answer && (
+            <div className={style.horizontal}>
+              <button className={style.button} onClick={handleAsk}>
+                Ask Question
+              </button>
+              <fetcher.Form method="patch">
+                <button className={style.button} type="submit">
+                  {"I'm feeling lucky"}
+                </button>
+              </fetcher.Form>
+            </div>
+          )
         )}
       </div>
     </div>

@@ -49,7 +49,9 @@ class Api::V1::QuestionsController < ApplicationController
 
     @question = @document.questions.find_by(text: text)
     if !@question.nil?
+      sleep 2
       render json: @question, status: 200
+      return
     end
 
     ada = get_embedding(text)
@@ -91,10 +93,9 @@ class Api::V1::QuestionsController < ApplicationController
     annoy = Annoy::AnnoyIndex.new(n_features: dimensions, metric: 'angular')
     annoy.load(path.to_s)
     results = annoy.get_nns_by_vector(projected.to_a, neighbors)
-    puts results
     labels = results.map { |id| @document.chunks.find(id).content }
+    puts "getting completion"
     completion = get_chat_completion(labels.to_json, text)
-    puts completion
     @question = @document.questions.create(text: text, answer: completion, embedding: embedding.to_a)
     render json: @question, status: 200
   end
