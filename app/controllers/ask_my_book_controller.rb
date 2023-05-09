@@ -4,6 +4,6 @@ class AskMyBookController < ApplicationController
   layout "ask_my_book"
 
   def index
-    @ask_my_book_props = { email: current_user.email }
+    @ask_my_book_props = {}
   end
 end
