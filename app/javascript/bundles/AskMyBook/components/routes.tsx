@@ -1,6 +1,7 @@
 import React from "react";
+import { Outlet } from "react-router-dom";
 
-import AskMyBook, { homeLoader } from "./AskMyBook";
+import AskMyBook, { homeLoader, authLoader } from "./AskMyBook";
 import { Signup, signupAction } from "./Signup";
 import { Deactivate, deactivateAction } from "./Deactivate";
 import { Login, loginAction } from "./Login";
@@ -21,30 +22,43 @@ export default [
         element: <Books />,
       },
       {
-        path: "signup",
-        element: <Signup />,
-        action: signupAction,
+        path: "auth",
+        element: <Outlet />,
+        children: [
+          {
+            path: "signup",
+            element: <Signup />,
+            action: signupAction,
+          },
+          {
+            path: "login",
+            element: <Login />,
+            action: loginAction,
+          },
+          {
+            path: "logout",
+            action: logoutAction,
+            element: <Logout />,
+          },
+          {
+            path: "deactivate",
+            action: deactivateAction,
+            element: <Deactivate />,
+          },
+        ],
       },
       {
-        path: "login",
-        element: <Login />,
-        action: loginAction,
-      },
-      {
-        path: "logout",
-        action: logoutAction,
-        element: <Logout />,
-      },
-      {
-        path: "deactivate",
-        action: deactivateAction,
-        element: <Deactivate />,
-      },
-      {
-        path: "questions/:id",
-        element: <Ask />,
-        action: askAction,
-        loader: askLoader,
+        path: "questions",
+        element: <Outlet />,
+        loader: authLoader,
+        children: [
+          {
+            path: ":id",
+            element: <Ask />,
+            action: askAction,
+            loader: askLoader,
+          },
+        ],
       },
     ],
   },

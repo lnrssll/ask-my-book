@@ -1,32 +1,31 @@
 .main {
-  width: 100%;
-  height: 100%;
-  padding: 1rem 0;
-}
-
-.horizontal {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.flexbox {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  width: 100%;
   height: 100%;
-  gap: 1rem;
+  min-height: 100vh;
 }
 
-.icon {
+.icons {
+  display: flex;
+  gap: 1rem;
   position: fixed;
   bottom: 1rem;
   right: 1rem;
-  text: black;
+  padding: 1rem;
+  background: radial-gradient(circle, #faebd7 0%, transparent 100%);
+  border-radius: 50%;
+}
+.icon {
   height: 1.5rem;
   width: 1.5rem;
+}
+
+.outlet {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }

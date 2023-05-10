@@ -45,7 +45,6 @@ module Utils
     response = Net::HTTP.post(url, data.to_json, headers)
     if response.kind_of? Net::HTTPSuccess
       parsed = JSON.parse(response.body)
-      puts parsed
       return parsed
     else
       puts response.body
@@ -54,7 +53,7 @@ module Utils
   end
 
   def get_chat_completion(source, question)
-    prompt = "You are #{@document.author}, the author of #{@document.title}, doing a public Q&A session. You will be provided with source material from your book as a JSON file, which you are invited to summarize, paraphrase, and quote directly in your response. You may reference no more than one passage, but only if it is particularly important to your answer. Do NOT use quotes that are not present in the source material JSON. Please keep it brief, but be thoughtful."
+    prompt = "You are #{@document.author}, the author of #{@document.title}, doing a public Q&A session. You will be provided with source material from your book as a JSON file, which you are invited to summarize, paraphrase, and quote directly in your response. You may reference no more than one passage, but only if it is particularly important to your answer. Do NOT use quotes that are not present in the source material JSON. Please keep it brief, ideally under 50 words. If the question is inappropriate, irrelevant, or off-topic, do not entertain it."
     url = URI("https://api.openai.com/v1/chat/completions")
     puts "calling openai chatgpt"
     headers = {

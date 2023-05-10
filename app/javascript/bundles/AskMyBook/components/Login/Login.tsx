@@ -1,7 +1,6 @@
 import React from "react";
 import type { ActionFunction } from "react-router-dom";
 import { Form, Link, redirect } from "react-router-dom";
-import style from "./Login.module.css";
 import ReactOnRails from "react-on-rails";
 
 export const loginAction: ActionFunction = async ({ request }) => {
@@ -17,22 +16,34 @@ export const loginAction: ActionFunction = async ({ request }) => {
     return redirect("/");
   }
   alert("Invalid email or password");
-  return redirect("/signup");
+  return redirect("/auth/signup");
 };
 
 const Login = () => {
   return (
-    <Form className={style.flexbox} method="post">
-      <label className={style.flexbox} htmlFor="email">
-        <div>Email</div>
-        <input id="email" name="user[email]" type="text" />
-      </label>
-      <label className={style.flexbox} htmlFor="password">
-        <div>Password</div>
-        <input id="password" name="user[password]" type="password" />
-      </label>
+    <Form className="flexbox" method="post">
+      <div className="flexbox">
+        <label htmlFor="email">
+          <input
+            id="email"
+            placeholder="yourname@example.com"
+            name="user[email]"
+            type="text"
+          />
+        </label>
+        <label htmlFor="password">
+          <input
+            id="password"
+            placeholder="password"
+            name="user[password]"
+            type="password"
+          />
+        </label>
+      </div>
       <button type="submit">Submit</button>
-      <Link to="/signup">No account? Signup</Link>
+      <Link to="/auth/signup" className="subtle">
+        No account? Signup
+      </Link>
     </Form>
   );
 };

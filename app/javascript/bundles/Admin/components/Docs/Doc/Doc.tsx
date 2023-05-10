@@ -1,5 +1,11 @@
-import React from "react";
-import { Link, redirect, useFetcher, useLoaderData } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  Link,
+  redirect,
+  useFetcher,
+  useFetchers,
+  useLoaderData,
+} from "react-router-dom";
 import type { LoaderFunction, ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import moment from "moment";
@@ -11,7 +17,6 @@ import { Chunk } from "./Chunk";
 import { Embed } from "./Embed";
 import { Decompose } from "./Decompose";
 import { Build } from "./Build";
-import { Classify } from "./Classify";
 
 export const docLoader: LoaderFunction = async ({ params }) => {
   const id = params.id;
@@ -46,50 +51,105 @@ const DocView = () => {
     title,
     description,
     author,
-    start,
-    end,
+    ready,
     created_at,
-    questions,
-    question_weights,
     chunkCount,
     embedded,
     components,
     trees,
   } = useLoaderData() as DocType & QuestionsType;
+  const [progress, setProgress] = React.useState(0);
   const fetcher = useFetcher();
+  const fetchers = useFetchers();
+
+  useEffect(() => {
+    const chunkFetcher = fetchers.find(
+      (f) => f.formAction === `/admin/docs/${id}/chunk`
+    );
+    const embedFetcher = fetchers.find(
+      (f) => f.formAction === `/admin/docs/${id}/embed`
+    );
+    const decomposeFetcher = fetchers.find(
+      (f) => f.formAction === `/admin/docs/${id}/decompose`
+    );
+    const buildFetcher = fetchers.find(
+      (f) => f.formAction === `/admin/docs/${id}/build`
+    );
+    if (chunkFetcher) {
+      setProgress(0);
+    } else if (embedFetcher) {
+      setProgress(1);
+    } else if (decomposeFetcher) {
+      setProgress(2);
+    } else if (buildFetcher) {
+      setProgress(3);
+    } else {
+      setProgress(4);
+    }
+  }, [fetchers]);
 
   return (
-    <div className={style.flexbox}>
-      <h1>{title}</h1>
-      {author && <h3>By {author}</h3>}
-      <div>{moment(created_at).fromNow()}</div>
-      {description && <div>{description}</div>}
+    <div className="flexbox">
       <div>
-        Pages {start}-{end}
+        <h1>{title}</h1>
+        <div className="horizontal">
+          {author && <h3>By {author}</h3>}
+          <div>Uploaded {moment(created_at).fromNow()}</div>
+        </div>
       </div>
-      <fetcher.Form method="patch">
-        <button type="submit" className={style.danger}>
-          Go Live
-        </button>
-      </fetcher.Form>
-      <fetcher.Form method="delete">
-        <button type="submit" className={style.danger}>
-          Delete
-        </button>
-      </fetcher.Form>
-      <div className={style.flexbox}>
-        <Link to={`/admin/docs/${id}/questions`}>Edit Questions</Link>
-        {!!questions.length ? (
-          <Classify weights={question_weights} />
-        ) : (
-          <div>You need to add Questions to create a Question classifier</div>
-        )}
+      {description && <div className="subtle">{description}</div>}
+      {trees && progress > 3 ? (
+        <div>
+          <div className="horizontal">
+            <Link to={`/admin/docs/${id}/questions`}>
+              <button>Questions</button>
+            </Link>
+            {!!trees && (
+              <Link to="search">
+                <button>Test</button>
+              </Link>
+            )}
+            {!ready ? (
+              <fetcher.Form method="patch">
+                <button type="submit" className="success">
+                  Go Live
+                </button>
+              </fetcher.Form>
+            ) : (
+              <button className="success ping" disabled>
+                Live
+              </button>
+            )}
+            <fetcher.Form method="delete">
+              <button type="submit" className={style.danger}>
+                Delete
+              </button>
+            </fetcher.Form>
+          </div>
+        </div>
+      ) : (
+        <div className="centered inconsolata">
+          Processing your document... This may take a few minutes!
+        </div>
+      )}
+      <div className={style.container}>
+        <Chunk />
+        {chunkCount > 0 && <Embed />}
+        {embedded && <Decompose />}
+        {!!components && <Build />}
+        <div className={style.progcontainer}>
+          <div className={style.progressbar}>
+            {progress > 0 && chunkCount > 0 && (
+              <div className={style.progress1} />
+            )}
+            {progress > 1 && embedded && <div className={style.progress2} />}
+            {progress > 2 && !!components && (
+              <div className={style.progress3} />
+            )}
+            {progress > 3 && !!trees && <div className={style.progress4} />}
+          </div>
+        </div>
       </div>
-      {!!trees && <Link to="search">Test Search</Link>}
-      <Chunk />
-      {chunkCount > 0 && <Embed />}
-      {embedded && <Decompose />}
-      {!!components && <Build />}
     </div>
   );
 };

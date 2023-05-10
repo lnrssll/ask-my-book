@@ -51,20 +51,29 @@ const Ask = () => {
   const {
     title,
     author,
-    description,
     default_question: defaultQuestion,
   } = useLoaderData() as BookType;
   const [question, setQuestion] = useState(defaultQuestion);
-  const [answer, setAnswer] = useState("");
+  const [answer, setAnswer] = useState<string[]>([]);
+  const [index, setIndex] = useState(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const fetcher = useFetcher();
 
   useEffect(() => {
     if (fetcher.data) {
       setQuestion(fetcher.data.text);
-      setAnswer(fetcher.data.answer);
+      setAnswer(fetcher.data.answer.split(" "));
     }
   }, [fetcher.data]);
+
+  useEffect(() => {
+    if (answer && answer.length > index) {
+      const timer = setTimeout(() => {
+        setIndex(index + 1);
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [answer, index]);
 
   const handleAsk = (e: MouseEvent) => {
     e.preventDefault();
@@ -72,54 +81,55 @@ const Ask = () => {
   };
 
   return (
-    <div className={style.flexbox}>
-      <h2 className={style.bold}>{title}</h2>
+    <div className="flexbox top">
+      <h2 className="centered">{title}</h2>
       {author && <h3>By {author}</h3>}
-      {description && <div>{description}</div>}
-      <div className={style.flexbox}>
-        <fetcher.Form className={style.flexbox} method="post">
-          <label htmlFor="question" className={style.flexbox}>
-            <div className={style.explanation}>
-              {
-                "This is an experiment in using AI to make my book's content more accessible. Ask a question and AI'll answer it in real-time:"
-              }
-            </div>
-            <textarea
-              disabled={fetcher.state === "submitting"}
-              id="question"
-              name="question"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-            />
-          </label>
-          {answer && (
-            <div className={style.answer}>
-              <div>
-                <span className={style.bold}>Answer:</span> {answer}
-              </div>
-              <button
-                className={style.button}
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setAnswer("");
-                  setQuestion("");
-                }}
-              >
-                Ask Another Question
-              </button>
-            </div>
-          )}
-          <div className={style.horizontal}>
-            <button ref={buttonRef} hidden type="submit">
-              Ask Question
-            </button>
+      <fetcher.Form className="flexbox fit" method="post">
+        <label htmlFor="question" className="flexbox">
+          <div className="subtle">
+            {
+              "This is an experiment in using AI to make my book's content more accessible. Ask a question and AI'll answer it in real-time:"
+            }
           </div>
-        </fetcher.Form>
+          <textarea
+            disabled={fetcher.state === "submitting" || !!answer.length}
+            id="question"
+            name="question"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+          />
+        </label>
+        {!!answer.length && (
+          <>
+            <div className={style.answer}>
+              {answer.slice(0, index).join(" ")}
+            </div>
+            <button
+              className={style.button}
+              hidden={answer.length > index}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setAnswer([]);
+                setIndex(0);
+                setQuestion("");
+              }}
+            >
+              Ask Another Question
+            </button>
+          </>
+        )}
+        <div className={style.horizontal}>
+          <button ref={buttonRef} hidden type="submit">
+            Ask Question
+          </button>
+        </div>
+      </fetcher.Form>
+      <div className="flexbox fit">
         {fetcher.state === "submitting" ? (
           <div className={style.loading} />
         ) : (
-          !answer && (
+          !answer.length && (
             <div className={style.horizontal}>
               <button className={style.button} onClick={handleAsk}>
                 Ask Question

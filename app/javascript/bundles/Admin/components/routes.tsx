@@ -7,7 +7,6 @@ import { Deactivate, deactivateAction } from "./Deactivate";
 import { Login, loginAction } from "./Login";
 import { Logout, logoutAction } from "./Logout";
 
-import { Dashboard } from "./Dashboard";
 import { Upload, uploadAction } from "./Upload";
 import { Docs, docsLoader } from "./Docs";
 import { Doc, docLoader, docAction } from "./Docs/Doc";
@@ -29,31 +28,6 @@ export default [
     children: [
       {
         index: true,
-        loader: adminLoader,
-        element: <Dashboard />,
-      },
-      {
-        path: "signup",
-        element: <Signup />,
-        action: signupAction,
-      },
-      {
-        path: "login",
-        element: <Login />,
-        action: loginAction,
-      },
-      {
-        path: "logout",
-        action: logoutAction,
-        element: <Logout />,
-      },
-      {
-        path: "deactivate",
-        action: deactivateAction,
-        element: <Deactivate />,
-      },
-      {
-        path: "upload",
         action: uploadAction,
         element: <Upload />,
       },
@@ -119,6 +93,32 @@ export default [
             ],
           },
         ],
+      },
+    ],
+  },
+  {
+    path: "/auth",
+    element: <Outlet />,
+    children: [
+      {
+        path: "signup",
+        element: <Signup />,
+        action: signupAction,
+      },
+      {
+        path: "login",
+        element: <Login />,
+        action: loginAction,
+      },
+      {
+        path: "logout",
+        action: logoutAction,
+        element: <Logout />,
+      },
+      {
+        path: "deactivate",
+        action: deactivateAction,
+        element: <Deactivate />,
       },
     ],
   },

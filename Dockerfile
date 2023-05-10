@@ -4,9 +4,18 @@ FROM ruby:$RUBY_VERSION
 
 # Install libvips for Active Storage preview support
 RUN apt-get update -qq && \
-    apt-get install -y build-essential libvips gfortran bash bash-completion libffi-dev tzdata postgresql nodejs npm yarn && \
+    apt-get install -y curl build-essential libvips gfortran bash bash-completion libffi-dev tzdata postgresql && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man
+
+RUN curl -sL https://deb.nodesource.com/setup_16.x  | bash - \
+	&& apt-get update -qq \
+	&& apt-get install -y nodejs
+
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+	&& echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+	&& apt-get update -qq \
+	&& apt-get install -y yarn
 
 # Rails app lives here
 WORKDIR /rails
@@ -23,6 +32,9 @@ RUN bundle install
 
 # Copy application code
 COPY . .
+
+RUN yarn set version 1.22.19
+RUN yarn install
 
 # Precompile bootsnap code for faster boot times
 # RUN bundle exec bootsnap precompile --gemfile app/ lib/

@@ -1,7 +1,6 @@
 import React from "react";
 import type { ActionFunction } from "react-router-dom";
 import { Form, Link, redirect } from "react-router-dom";
-import style from "./Signup.module.css";
 import ReactOnRails from "react-on-rails";
 
 export const signupAction: ActionFunction = async ({ request }) => {
@@ -14,31 +13,43 @@ export const signupAction: ActionFunction = async ({ request }) => {
     body: formData,
   });
   if (res.ok) {
-    return redirect("/login");
+    return redirect("/auth/login");
   }
 };
 
 const Signup = () => {
   return (
-    <Form className={style.flexbox} method="post">
-      <label className={style.flexbox} htmlFor="email">
-        <div>Email</div>
-        <input id="email" name="user[email]" type="text" />
-      </label>
-      <label className={style.flexbox} htmlFor="password">
-        <div>Password</div>
-        <input id="password" name="user[password]" type="password" />
-      </label>
-      <label className={style.flexbox} htmlFor="confirm-password">
-        <div>Confirm Password</div>
-        <input
-          id="password_confirmation"
-          name="user[password_confirmation]"
-          type="password"
-        />
-      </label>
+    <Form className="flexbox" method="post">
+      <div className="flexbox">
+        <label htmlFor="email">
+          <input
+            id="email"
+            placeholder="yourname@example.com"
+            name="user[email]"
+            type="text"
+          />
+        </label>
+        <label htmlFor="password">
+          <input
+            id="password"
+            placeholder="password"
+            name="user[password]"
+            type="password"
+          />
+        </label>
+        <label htmlFor="confirm-password">
+          <input
+            placeholder="confirm password"
+            id="password_confirmation"
+            name="user[password_confirmation]"
+            type="password"
+          />
+        </label>
+      </div>
       <button type="submit">Submit</button>
-      <Link to="/login">Already a user? Login</Link>
+      <Link to="/auth/login" className="subtle">
+        Already a user? Login
+      </Link>
     </Form>
   );
 };

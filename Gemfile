@@ -79,3 +79,5 @@ gem 'rumale'
 
 # for vector search
 gem "annoy-rb"
+
+gem "dalli"

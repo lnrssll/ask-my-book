@@ -54,6 +54,8 @@ class Api::V1::QuestionsController < ApplicationController
       return
     end
 
+    start_time = Time.now
+
     ada = get_embedding(text)
     if ada.nil?
       puts "embedding failed"
@@ -63,27 +65,40 @@ class Api::V1::QuestionsController < ApplicationController
 
     embedding = ada["data"][0]["embedding"]
     embedding = Numo::DFloat.cast(embedding)
-    puts embedding
+
+    puts "embedding time: #{Time.now - start_time}"
+    lap = Time.now
+    puts "getting projection"
 
     # project
-    puts "downloading NArrays"
-    json_mean = @document.mean.download
-    mean = JSON.parse(json_mean)
-    mean = Numo::DFloat.cast(mean)
-    json_transformer = @document.transformer.download
-    transformer = JSON.parse(json_transformer)
-    transformer = Numo::DFloat.cast(transformer)
+    mean = Rails.cache.fetch(@document.id.to_s + "_mean", expires_in: 1.day) do
+      puts "downloading mean"
+      json_mean = @document.mean.download
+      parsed = JSON.parse(json_mean)
+      Numo::DFloat.cast(parsed)
+    end
+    transformer = Rails.cache.fetch(@document.id.to_s + "_transformer", expires_in: 1.day) do
+      puts "downloading transformer"
+      json_transformer = @document.transformer.download
+      parsed = JSON.parse(json_transformer)
+      Numo::DFloat.cast(parsed)
+    end
 
-    puts "projecting"
+    dequestioner
+
+    puts "loading time: #{Time.now - lap}"
+
     projected = (embedding - mean).dot(transformer.transpose)
 
     if @document.question_weights.length > 0
       puts "getting weights"
       projected[dequestioner] = 0
-      puts projected
     end
 
+    puts "projection time: #{Time.now - lap}"
+    lap = Time.now
     puts "getting nearest"
+
     filename = @document.id.to_s + ".ann"
     path = Rails.root.join("storage", "index", filename)
 
@@ -94,9 +109,22 @@ class Api::V1::QuestionsController < ApplicationController
     annoy.load(path.to_s)
     results = annoy.get_nns_by_vector(projected.to_a, neighbors)
     labels = results.map { |id| @document.chunks.find(id).content }
+
+    puts results.join(", ")
+
+    puts "search time: #{Time.now - lap}"
+    lap = Time.now
     puts "getting completion"
+
     completion = get_chat_completion(labels.to_json, text)
+
+    puts "completion time: #{Time.now - lap}"
+    lap = Time.now
+
     @question = @document.questions.create(text: text, answer: completion, embedding: embedding.to_a)
+
+    puts "total time: #{Time.now - start_time}"
+
     render json: @question, status: 200
   end
 

@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
 import type { MouseEvent, ChangeEvent } from "react";
-import { Form, redirect } from "react-router-dom";
+import { Form, Link, redirect } from "react-router-dom";
 import type { ActionFunction } from "react-router-dom";
 import style from "./Upload.module.css";
 import ReactOnRails from "react-on-rails";
+import { startCase } from "lodash";
 
 import Preview from "./Preview";
 
@@ -44,105 +45,145 @@ const Upload = () => {
       setAuthor("");
       setStart(1);
       setPage(1);
-      setTitle(file.name.split(".")[0]);
+      setTitle(startCase(file.name.split(".")[0]));
     }
   };
 
+  const handleCancel = (e: MouseEvent) => {
+    setFile(null);
+    setDescription("");
+    setAuthor("");
+    setStart(1);
+    setPage(1);
+    setTitle("");
+  };
+
   return (
-    <Form encType="multipart/form-data" className={style.form} method="post">
-      {!file && <button onClick={handleInputClick}>Choose File</button>}
-      <label htmlFor="file">
-        <input
-          ref={inputRef}
-          id="file"
-          name="document[file]"
-          accept=".pdf"
-          multiple={false}
-          type="file"
-          onChange={handleFileChange}
-        />
-      </label>
-      {!!file && (
-        <>
-          <label className={style.flexbox} htmlFor="title">
-            <div>Title</div>
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              id="title"
-              name="document[title]"
-              type="text"
-            />
-          </label>
-          <label className={style.flexbox} htmlFor="author">
-            <div>Author</div>
-            <input
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              id="author"
-              name="document[author]"
-              type="text"
-            />
-          </label>
-          <label className={style.flexbox} htmlFor="description">
-            <textarea
-              id="description"
-              name="document[description]"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description..."
-            />
-          </label>
-          <Preview
-            file={file}
-            page={page}
-            setPage={setPage}
-            setStart={setStart}
-            setEnd={setEnd}
+    <div className="flexbox fit">
+      <Form encType="multipart/form-data" className={style.form} method="post">
+        {!file && <button onClick={handleInputClick}>Upload</button>}
+        <label className={style.label} htmlFor="file">
+          <input
+            ref={inputRef}
+            id="file"
+            name="document[file]"
+            accept=".pdf"
+            multiple={false}
+            type="file"
+            onChange={handleFileChange}
           />
-          <div className={style.horizontal}>
-            <label className={style.flexbox} htmlFor="start">
-              <div>Start Page</div>
+        </label>
+        {!!file && (
+          <>
+            <label className={style.label} htmlFor="title">
               <input
-                className={style.narrow}
-                value={start}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setStart(val);
-                  if (val > end) {
-                    setEnd(val);
-                  }
-                }}
-                id="start"
-                name="document[start]"
-                type="number"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Title"
+                id="title"
+                name="document[title]"
+                type="text"
+                className={style.input}
               />
             </label>
-            <label className={style.flexbox} htmlFor="end">
-              <div>End Page</div>
+            <label className={style.label} htmlFor="author">
               <input
-                className={style.narrow}
-                value={end}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setEnd(val);
-                  if (val < start) {
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                id="author"
+                placeholder="Author"
+                name="document[author]"
+                type="text"
+                className={style.input}
+              />
+            </label>
+            <label className={style.label} htmlFor="description">
+              <textarea
+                id="description"
+                name="document[description]"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Description..."
+              />
+            </label>
+            <div className={style.preview}>
+              <Preview
+                file={file}
+                page={page}
+                setPage={setPage}
+                setStart={setStart}
+                setEnd={setEnd}
+              />
+              <div className={style.horizontal}>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setStart(page);
+                  }}
+                >
+                  Set Start
+                </button>
+                <div className={style.flexbox}>Page {page}</div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setEnd(page);
+                  }}
+                >
+                  Set End
+                </button>
+              </div>
+            </div>
+            <div className={style.horizontal}>
+              <label className={style.label} htmlFor="start">
+                <input
+                  value={start}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
                     setStart(val);
-                  }
-                }}
-                id="end"
-                name="document[end]"
-                type="number"
-              />
-            </label>
-          </div>
-          <div className={style.horizontal}>
-            <button onClick={handleInputClick}>Change File</button>
-            <button type="submit">Submit</button>
-          </div>
-        </>
+                    if (val > end) {
+                      setEnd(val);
+                    }
+                  }}
+                  id="start"
+                  name="document[start]"
+                  type="number"
+                  style={{ textAlign: "center" }}
+                  className={style.input}
+                />
+              </label>
+              <div className="centered">through</div>
+              <label className={style.label} htmlFor="end">
+                <input
+                  value={end}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    setEnd(val);
+                    if (val < start) {
+                      setStart(val);
+                    }
+                  }}
+                  id="end"
+                  name="document[end]"
+                  type="number"
+                  style={{ textAlign: "center" }}
+                  className={style.input}
+                />
+              </label>
+            </div>
+            <div className={style.double}>
+              <button onClick={handleCancel}>Cancel</button>
+              <button type="submit">Submit</button>
+            </div>
+          </>
+        )}
+      </Form>
+      {!file && (
+        <Link to="docs">
+          <button>My Docs</button>
+        </Link>
       )}
-    </Form>
+    </div>
   );
 };
 

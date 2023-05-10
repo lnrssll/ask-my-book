@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import type { FC } from "react";
 import { Document as PDFDocument, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
+import {
+  BackwardIcon,
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ForwardIcon,
+} from "@heroicons/react/24/solid";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -31,18 +39,10 @@ const Preview: FC<PreviewProps> = ({
             <button
               onClick={(e) => {
                 e.preventDefault();
-                setPage(1);
-              }}
-            >
-              start
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
                 setPage(page - 1);
               }}
             >
-              prev
+              <ChevronLeftIcon className={style.icon} />
             </button>
             {page > 10 && (
               <button
@@ -51,9 +51,17 @@ const Preview: FC<PreviewProps> = ({
                   setPage(page - 10);
                 }}
               >
-                prev 10
+                <ChevronDoubleLeftIcon className={style.icon} />
               </button>
             )}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setPage(1);
+              }}
+            >
+              <BackwardIcon className={style.icon} />
+            </button>
           </div>
         )}
         <PDFDocument
@@ -75,18 +83,10 @@ const Preview: FC<PreviewProps> = ({
             <button
               onClick={(e) => {
                 e.preventDefault();
-                setPage(pageCount);
-              }}
-            >
-              end
-            </button>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
                 setPage(page + 1);
               }}
             >
-              next
+              <ChevronRightIcon className={style.icon} />
             </button>
             {page < pageCount - 10 && (
               <button
@@ -95,30 +95,19 @@ const Preview: FC<PreviewProps> = ({
                   setPage(page + 10);
                 }}
               >
-                next 10
+                <ChevronDoubleRightIcon className={style.icon} />
               </button>
             )}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                setPage(pageCount);
+              }}
+            >
+              <ForwardIcon className={style.icon} />
+            </button>
           </div>
         )}
-      </div>
-      <div className={style.flexbox}>Page {page}</div>
-      <div className={style.horizontal}>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            setStart(page);
-          }}
-        >
-          Set Start
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            setEnd(page);
-          }}
-        >
-          Set End
-        </button>
       </div>
     </div>
   );

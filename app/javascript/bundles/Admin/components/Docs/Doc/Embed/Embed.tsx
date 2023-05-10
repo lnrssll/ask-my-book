@@ -3,7 +3,6 @@ import { useFetcher, useRouteLoaderData } from "react-router-dom";
 import type { ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import type { DocType } from "../../Docs";
-import style from "./Embed.module.css";
 
 export const embedAction: ActionFunction = async ({ params }) => {
   const id = params.id;
@@ -28,12 +27,27 @@ const Embed = () => {
   }, [embedded, chunkCount]);
 
   if (fetcher.state === "submitting") {
-    return <div>Embeding...</div>;
+    return (
+      <div className="flexbox no-padding centered">
+        <p>Embedding...</p>
+        <div className="loading" />
+      </div>
+    );
   }
 
   return (
-    <div className={style.flexbox}>
-      <div>{embedded ? "Chunks embedded" : "Not embedded"}</div>
+    <div className="flexbox self-end no-padding">
+      <div className="subtle centered">
+        {embedded ? chunkCount + " chunks embedded" : "Not embedded"}
+      </div>
+      <button
+        type="submit"
+        style={{ opacity: "50%" }}
+        disabled
+        className="no-cursor no-shadow danger"
+      >
+        No Action
+      </button>
     </div>
   );
 };

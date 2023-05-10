@@ -1,8 +1,7 @@
 import React from "react";
-import { Form, redirect } from "react-router-dom";
+import { Form, Link, redirect } from "react-router-dom";
 import type { ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
-import style from "./Deactivate.module.css";
 
 export const deactivateAction: ActionFunction = async () => {
   const url = "/api/v1/deactivate";
@@ -12,20 +11,24 @@ export const deactivateAction: ActionFunction = async () => {
     method: "DELETE",
   });
   if (res.ok) {
-    return redirect("/signup");
+    return redirect("/auth/signup");
   }
 };
 
 const Deactivate = () => {
   return (
-    <Form method="delete">
+    <Form className="flexbox" method="delete">
       <h1>Deactivate Account</h1>
-      <div className={style.flexbox}>
+      <div className="flexbox">
         <p>Are you sure?</p>
-        <button className={style.danger} type="submit">
-          Deactivate
-        </button>
+        <p>All your data will be deleted.</p>
       </div>
+      <button className="danger" type="submit">
+        Deactivate
+      </button>
+      <Link to="/auth/logout" className="subtle">
+        Logout instead?
+      </Link>
     </Form>
   );
 };

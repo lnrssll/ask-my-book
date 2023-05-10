@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import type { ActionFunction } from "react-router-dom";
-import { useFetcher, useRouteLoaderData } from "react-router-dom";
+import { Link, useFetcher, useRouteLoaderData } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import { AuthenticityHeaders } from "react-on-rails/node_package/lib/types";
 
 import style from "./Questions.module.css";
 import type { DocType } from "../../Docs";
 import { Question } from "./Question";
+import { Classify } from "../Classify";
 
 interface HTTPOptions {
   method: string;
@@ -46,62 +47,65 @@ export interface QuestionsType {
 }
 
 export const Questions = () => {
-  const { title, description, question_weights, questions } =
+  const { id, title, description, question_weights, questions } =
     useRouteLoaderData("doc") as DocType & QuestionsType;
   const [text, setText] = useState("");
   const [answer, setAnswer] = useState("");
   const fetcher = useFetcher();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = () => {
     setText("");
     setAnswer("");
   };
 
   return (
-    <div className={style.flexbox}>
-      <h1>{title ?? "Not Found"}</h1>
-      {description && <p>{description}</p>}
+    <div className="flexbox scroll-safe">
+      <Link to={`/admin/docs/${id}`}>
+        <h1 className="centered">{title ?? "Not Found"}</h1>
+      </Link>
+      {questions.length > 0 && (
+        <div>
+          {questions.length} question{questions.length > 1 && "s"} found
+        </div>
+      )}
       <EmbedQuestions questions={questions} />
-      <div className={style.horizontal}>
+      {!!questions.length ? (
+        <Classify weights={question_weights} />
+      ) : (
+        <div>You need to add Questions to create a Question classifier</div>
+      )}
+      <div className={style.container}>
         <fetcher.Form
           onSubmit={handleSubmit}
-          className={style.flexbox}
+          className="flexbox no-padding"
           method="post"
         >
           <h2>New Question</h2>
-          <label htmlFor="question">
-            <div className={style.label}>Question</div>
+          <label className={style.label} htmlFor="question">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               id="question"
               name="question[text]"
+              placeholder="Question..."
             />
           </label>
-          <label htmlFor="answer">
-            <div className={style.label}>Answer</div>
+          <label className={style.label} htmlFor="answer">
             <textarea
               id="answer"
               name="question[answer]"
+              placeholder="Answer..."
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
             />
           </label>
           <button type="submit">Create</button>
         </fetcher.Form>
-        <div className={style.flexbox}>
-          <h2>Questions</h2>
-          {questions.length > 0 && (
-            <div>
-              {questions.length} question{questions.length > 1 && "s"} found
-            </div>
-          )}
-          {!!questions.length ? (
-            questions.reverse().map((q) => <Question question={q} key={q.id} />)
-          ) : (
-            <p>No questions yet</p>
-          )}
-        </div>
+        {!!questions.length ? (
+          questions.reverse().map((q) => <Question question={q} key={q.id} />)
+        ) : (
+          <div>No questions yet</div>
+        )}
       </div>
     </div>
   );
@@ -110,16 +114,21 @@ export const Questions = () => {
 const EmbedQuestions = ({ questions }: QuestionsType) => {
   const fetcher = useFetcher();
   const unembeddedQuestions = questions.filter((q) => q.embedding.length === 0);
+  const len = questions.length;
+  const ulen = unembeddedQuestions.length;
+  const plural = ulen > 1;
 
   if (unembeddedQuestions.length === 0) {
-    return <div>All questions are embedded</div>;
+    return <div className="subtle">All {len} questions are embedded</div>;
   }
 
   return (
-    <div className={style.smallflex}>
-      <p>{unembeddedQuestions.length} questions are not embedded</p>
+    <div className="flexbox">
+      <p>
+        {ulen} of {len} question{plural && "s"} not embedded
+      </p>
       <fetcher.Form method="patch">
-        <button type="submit">Embed Questions</button>
+        <button type="submit">Embed</button>
       </fetcher.Form>
     </div>
   );

@@ -3,7 +3,6 @@ import { useFetcher, useRouteLoaderData } from "react-router-dom";
 import type { ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import type { DocType } from "../../Docs";
-import style from "./Decompose.module.css";
 
 export const decomposeAction: ActionFunction = async ({ params }) => {
   const id = params.id;
@@ -42,18 +41,27 @@ const Decompose = () => {
   }, [fetcher.state]);
 
   if (fetcher.state === "submitting") {
-    return <div>Decomposing...</div>;
+    return (
+      <div className="flexbox no-padding centered">
+        <p>Decomposing...</p>
+        <div className="loading" />
+      </div>
+    );
   }
 
   return (
-    <div className={style.flexbox}>
-      <div>
-        decomposed and projected with onto {components} dimensions {oldVariance}
+    <div className="flexbox self-end no-padding">
+      <div className="subtle centered" style={{ width: "300px" }}>
+        decomposed and projected onto {components} dimensions with {oldVariance}
         % of variance retained
       </div>
       {showForm ? (
-        <fetcher.Form method="post" action={`/admin/docs/${id}/decompose`}>
-          <label className={style.flexbox} htmlFor="variance">
+        <fetcher.Form
+          className="flexbox"
+          method="post"
+          action={`/admin/docs/${id}/decompose`}
+        >
+          <label htmlFor="variance">
             <div>% of Variance Retained</div>
             <input
               type="number"
@@ -65,7 +73,7 @@ const Decompose = () => {
               onChange={(e) => setVariance(parseInt(e.target.value))}
             />
           </label>
-          <div className={style.horizontal}>
+          <div className="horizontal">
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -74,7 +82,7 @@ const Decompose = () => {
             >
               Cancel
             </button>
-            <button type="submit" className={style.danger}>
+            <button type="submit" className="danger">
               Confirm
             </button>
           </div>
@@ -85,7 +93,7 @@ const Decompose = () => {
             e.preventDefault();
             setShowForm(true);
           }}
-          className={style.danger}
+          className="danger"
         >
           New Decompose
         </button>

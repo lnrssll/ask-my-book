@@ -27,3 +27,149 @@
   border-radius: 0.5rem;
   font-weight: bold;
 }
+
+.container {
+  display: grid;
+  grid-template-rows: repeat(4, auto);
+  grid-auto-flow: column;
+  gap: 10px;
+  position: relative;
+  margin-top: 1rem;
+}
+
+.progcontainer {
+  position: relative;
+  grid-row: span 4 / span 4;
+}
+
+.progressbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  border-radius: 0.5rem;
+  transform: translateX(1rem);
+  width: 0.5rem;
+  background-color: #ccc;
+}
+
+.progress1 {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25%;
+  border-radius: 0.5rem 0.5rem 0 0;
+  width: 0.5rem;
+  background-color: #4caf50;
+  animation: progress 1s ease-in-out;
+}
+
+.progress2 {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(100%);
+  height: 25%;
+  width: 0.5rem;
+  background-color: #4caf50;
+  animation: progress 1s ease-in-out;
+}
+
+.progress3 {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(200%);
+  height: 25%;
+  width: 0.5rem;
+  background-color: #4caf50;
+  animation: progress 1s ease-in-out;
+}
+
+.progress4 {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(300%);
+  border-radius: 0 0 0.5rem 0.5rem;
+  height: 25%;
+  width: 0.5rem;
+  background-color: #4caf50;
+  animation: progress 1s ease-in-out;
+}
+
+@media screen and (min-width: 1250px) {
+  .container {
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: row;
+  }
+
+  .progcontainer {
+    position: relative;
+    grid-column: span 4 / span 4;
+  }
+
+  .progressbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(2rem);
+    border-radius: 0.5rem;
+    height: 0.5rem;
+    background-color: #ccc;
+  }
+
+  .progress1 {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 25%;
+    height: 0.5rem;
+    border-radius: 0.5rem 0 0 0.5rem;
+    background-color: #4caf50;
+    animation: progress 1s ease-in-out;
+  }
+
+  .progress2 {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translateX(100%);
+    width: 25%;
+    height: 0.5rem;
+    background-color: #4caf50;
+    animation: progress 1s ease-in-out;
+  }
+
+  .progress3 {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translateX(200%);
+    width: 25%;
+    height: 0.5rem;
+    background-color: #4caf50;
+    animation: progress 1s ease-in-out;
+  }
+
+  .progress4 {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translateX(300%);
+    border-radius: 0 0.5rem 0.5rem 0;
+    width: 25%;
+    height: 0.5rem;
+    background-color: #4caf50;
+    animation: progress 1s ease-in-out;
+  }
+}

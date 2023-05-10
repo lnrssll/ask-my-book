@@ -4,7 +4,6 @@ import { useFetcher } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 
 import type { QuestionType } from "../Questions";
-import style from "./Question.module.css";
 
 export const questionAction: ActionFunction = async ({ request, params }) => {
   const method = request.method;
@@ -24,17 +23,19 @@ export const questionAction: ActionFunction = async ({ request, params }) => {
 const Question = ({ question }: { question: QuestionType }) => {
   const fetcher = useFetcher();
   return (
-    <div className={style.smallflex}>
-      <p>{question.text.trim()}</p>
-      <p>{question.answer.trim()}</p>
-      <fetcher.Form
-        method="delete"
-        action={question.id.toString()}
-        className={style.flexbox}
-      >
-        <button type="submit">Delete</button>
-      </fetcher.Form>
-      {!!question.embedding.length && <div>Embedded</div>}
+    <div className="flexbox no-padding justify">
+      <b>{question.text.trim()}</b>
+      <div className="flexbox no-grow no-padding">
+        <p className="inconsolata standout">{question.answer.trim()}</p>
+      </div>
+      <div className="horizontal">
+        {!!question.embedding.length && <div className="subtle">Embedded</div>}
+        <fetcher.Form method="delete" action={question.id.toString()}>
+          <button className="danger" type="submit">
+            Delete
+          </button>
+        </fetcher.Form>
+      </div>
     </div>
   );
 };

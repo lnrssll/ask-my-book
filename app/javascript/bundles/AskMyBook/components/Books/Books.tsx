@@ -1,5 +1,4 @@
 import React from "react";
-import style from "./Books.module.css";
 import { Link, useLoaderData } from "react-router-dom";
 import type { LoaderFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
@@ -28,13 +27,16 @@ const Books = () => {
   const books = useLoaderData() as BookType[];
 
   return (
-    <div className={style.flexbox}>
+    <div className="flexbox">
       {!!books.length &&
         books.map((book) => (
           <Link to={`questions/${book.id}`} key={book.id}>
             <h2>{book.title}</h2>
-            <h3>{book.author}</h3>
-            <p>{book.description}</p>
+            {book.author && <h3>By {book.author}</h3>}
+            <hr />
+            <p className="subtle">
+              {book.description || "No description available"}
+            </p>
           </Link>
         ))}
     </div>

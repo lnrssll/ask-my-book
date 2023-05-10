@@ -1,6 +1,6 @@
 .pdf {
   position: relative;
-  padding: 0 1rem;
+  padding: 1rem 1rem;
 }
 
 .right {
@@ -10,7 +10,7 @@
   position: absolute;
   top: 50%;
   right: 0;
-  transform: translateX(100%);
+  transform: translateX(100%) translateY(-50%);
   padding: 0.5rem;
 }
 
@@ -21,14 +21,15 @@
   position: absolute;
   top: 50%;
   left: 0;
-  transform: translateX(-100%);
+  transform: translateX(-100%) translateY(-50%);
   padding: 0.5rem;
 }
 
 .horizontal {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
 }
 
 .flexbox {
@@ -43,4 +44,9 @@
 .hidden,
 input[type="file"] {
   display: none;
+}
+
+.icon {
+  height: 1.5rem;
+  width: 1.5rem;
 }

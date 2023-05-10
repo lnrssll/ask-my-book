@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useFetcher, useRouteLoaderData } from "react-router-dom";
+import { Link, useFetcher, useRouteLoaderData } from "react-router-dom";
 import type { ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import type { DocType } from "../../Docs";
@@ -21,28 +21,29 @@ export const searchAction: ActionFunction = async ({ params }) => {
 const Search = () => {
   const [expanded, setExpanded] = useState(0);
   const fetcher = useFetcher();
-  const { chunkCount } = useRouteLoaderData("doc") as DocType;
+  const { id, title, chunkCount } = useRouteLoaderData("doc") as DocType;
 
   if (fetcher.state === "submitting") {
     return <div>Searching...</div>;
   }
 
   return (
-    <div className={style.flexbox}>
+    <div className="flexbox">
+      <Link to={`/admin/docs/${id}`}>
+        <h1 className="centered">{title ?? "Not Found"}</h1>
+      </Link>
       <fetcher.Form method="patch">
-        <button type="submit" className={style.danger}>
-          New Search Test
-        </button>
+        <button type="submit">New Search Test</button>
       </fetcher.Form>
       {fetcher.data && (
-        <div className={style.flexbox}>
-          <div>Results</div>
+        <div className="flexbox fit">
           <div className={style.grid}>
             {fetcher.data.result?.map((result: number, i: number) => (
               <button
                 key={i}
                 style={{
-                  backgroundColor: expanded === i ? "#ffebee" : "#eebb11",
+                  backgroundColor: expanded === i ? "#2f2626" : "#fffff0",
+                  color: expanded === i ? "#fffff0" : "#2f2626",
                 }}
                 onClick={() => setExpanded(i)}
                 className={style.item}
@@ -52,9 +53,9 @@ const Search = () => {
               </button>
             ))}
           </div>
-          <div>Chunks labeled 0 through {chunkCount}</div>
+          <div className="subtle">Chunks labeled 0 through {chunkCount}</div>
           <div>{fetcher.data.time} millis</div>
-          <div className={style.label}>{fetcher.data.labels[expanded]}</div>
+          <div className="standout fit">{fetcher.data.labels[expanded]}</div>
         </div>
       )}
     </div>

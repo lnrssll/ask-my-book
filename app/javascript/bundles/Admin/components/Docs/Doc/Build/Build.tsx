@@ -3,7 +3,6 @@ import { useFetcher, useRouteLoaderData } from "react-router-dom";
 import type { ActionFunction } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
 import type { DocType } from "../../Docs";
-import style from "./Build.module.css";
 
 export const buildAction: ActionFunction = async ({ params }) => {
   const id = params.id;
@@ -34,17 +33,26 @@ const Build = () => {
   }, [fetcher.state]);
 
   if (fetcher.state === "submitting") {
-    return <div>Building...</div>;
+    return (
+      <div className="flexbox no-padding centered">
+        <p>Building...</p>
+        <div className="loading" />
+      </div>
+    );
   }
 
   return (
-    <div className={style.flexbox}>
-      <div>
+    <div className="flexbox self-end no-padding">
+      <div className="subtle centered">
         {oldTrees ? `Index built with ${oldTrees} trees` : "Index not built"}
       </div>
       {showForm ? (
-        <fetcher.Form method="post" action={`/admin/docs/${id}/build`}>
-          <label className={style.flexbox} htmlFor="trees">
+        <fetcher.Form
+          className="flexbox"
+          method="post"
+          action={`/admin/docs/${id}/build`}
+        >
+          <label htmlFor="trees">
             <div>Search Trees in Index</div>
             <input
               type="number"
@@ -55,7 +63,7 @@ const Build = () => {
               onChange={(e) => setTrees(parseInt(e.target.value))}
             />
           </label>
-          <div className={style.horizontal}>
+          <div className="horizontal">
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -64,7 +72,7 @@ const Build = () => {
             >
               Cancel
             </button>
-            <button type="submit" className={style.danger}>
+            <button type="submit" className="danger">
               Confirm
             </button>
           </div>
@@ -75,7 +83,7 @@ const Build = () => {
             e.preventDefault();
             setShowForm(true);
           }}
-          className={style.danger}
+          className="danger"
         >
           New Build
         </button>

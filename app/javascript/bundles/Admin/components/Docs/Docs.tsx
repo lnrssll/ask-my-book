@@ -35,6 +35,8 @@ export interface DocType {
 
   question_weights: number[];
 
+  ready: boolean;
+
   start: number;
   end: number;
 
@@ -47,22 +49,24 @@ const Docs = () => {
   const fetcher = useFetcher();
 
   return (
-    <div className={style.flexbox}>
-      <h1>Docs</h1>
-      <Link to="/admin/upload">Create New</Link>
+    <div className="flexbox">
       {!!docs.length &&
         docs.map((doc) => (
-          <div className={style.horizontal} key={doc.id}>
-            <Link to={String(doc.id)}>
-              <h2>{doc.title}</h2>
-              {doc.author && <h3>By {doc.author}</h3>}
-              <div>{moment(doc.created_at).fromNow()}</div>
-            </Link>
-            <fetcher.Form method="delete" action={`/admin/docs/${doc.id}`}>
-              <button type="submit" className={style.danger}>
-                Delete
-              </button>
-            </fetcher.Form>
+          <div className="flexbox" key={doc.id}>
+            <div>
+              <Link to={String(doc.id)}>
+                <h2>{doc.title}</h2>
+                {doc.author && <h3>By {doc.author}</h3>}
+              </Link>
+              <div className="horizontal">
+                <div className="subtle">{moment(doc.created_at).fromNow()}</div>
+                <fetcher.Form method="delete" action={`/admin/docs/${doc.id}`}>
+                  <button type="submit" className={style.danger}>
+                    Delete
+                  </button>
+                </fetcher.Form>
+              </div>
+            </div>
           </div>
         ))}
     </div>
