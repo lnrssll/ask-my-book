@@ -113,6 +113,7 @@ class Api::V1::DocumentsController < ApplicationController
   def embed
     @user = current_user
     @document = @user.documents.find(params[:id])
+    cost = 0
     @document.chunks.each do |chunk|
       if chunk.embedding.length == 0
         ada = get_embedding(chunk.content)
@@ -122,14 +123,13 @@ class Api::V1::DocumentsController < ApplicationController
           return
         end
         total_tokens = ada["usage"]["total_tokens"]
-        cost = total_tokens * 0.0004
-        puts "cost: #{cost}"
+        cost += total_tokens * 0.0004 / 1000
         embedding = ada["data"][0]["embedding"]
-        puts embedding.length
         puts "success"
         chunk.update(embedding: embedding)
       end
     end
+    @user.update(credits: @user.credits - cost)
     puts "checking for completion"
     embedded = !@document.chunks.any? { |chunk| chunk.embedding.length == 0 }
     @document.update(embedded: embedded)

@@ -122,6 +122,14 @@ const EmbedQuestions = ({ questions }: QuestionsType) => {
     return <div className="subtle">All {len} questions are embedded</div>;
   }
 
+  if (fetcher.state === "submitting") {
+    return (
+      <div className="flexbox">
+        <div className="loading" />
+      </div>
+    );
+  }
+
   return (
     <div className="flexbox">
       <p>

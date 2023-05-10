@@ -83,6 +83,8 @@ module Utils
     response = Net::HTTP.post(url, data.to_json, headers)
     if response.kind_of? Net::HTTPSuccess
       parsed = JSON.parse(response.body)
+      cost = parsed["usage"]["total_tokens"] * 0.002 / 1000
+      @user.update(credits: @user.credits - cost)
       puts parsed
       return parsed["choices"][0]["message"]["content"]
     else

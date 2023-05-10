@@ -1,9 +1,7 @@
 import React from "react";
 import type { ActionFunction } from "react-router-dom";
-import { useFetcher } from "react-router-dom";
+import { useFetcher, useParams } from "react-router-dom";
 import ReactOnRails from "react-on-rails";
-
-import style from "./Classify.module.css";
 
 export const classifyAction: ActionFunction = async ({ params }) => {
   const id = params.id;
@@ -20,11 +18,20 @@ export const classifyAction: ActionFunction = async ({ params }) => {
 
 const Classify = ({ weights }: { weights: number[] }) => {
   const fetcher = useFetcher();
+  const { id } = useParams();
+
+  if (fetcher.state === "submitting") {
+    return (
+      <div className="flexbox">
+        <div className="loading" />
+      </div>
+    );
+  }
 
   return (
-    <div className={style.smallflex}>
-      <fetcher.Form method="patch" action={"classify"}>
-        <button className={style.danger} type="submit">
+    <div className="flexbox">
+      <fetcher.Form method="patch" action={`/admin/docs/${id}/classify`}>
+        <button className="danger" type="submit">
           {weights.length === 0
             ? "Classify Questions"
             : "Update Classification"}

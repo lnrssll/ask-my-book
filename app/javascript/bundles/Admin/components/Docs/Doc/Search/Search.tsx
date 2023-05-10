@@ -24,7 +24,11 @@ const Search = () => {
   const { id, title, chunkCount } = useRouteLoaderData("doc") as DocType;
 
   if (fetcher.state === "submitting") {
-    return <div>Searching...</div>;
+    return (
+      <div className="flexbox">
+        <div className="loading" />
+      </div>
+    );
   }
 
   return (

@@ -1,11 +1,16 @@
 class Api::V1::UsersController < ApplicationController
 
   def create
-    @user = User.new(user_params)
-    if @user.save
-      render json: @user, status: :created
+    if verify_access_code
+      puts "\n#####\nAccess code verified\n#####\n"
+      @user = User.new(user_params)
+      if @user.save
+        render json: @user, status: :created
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: { message: "Invalid access code" }, status: 403
     end
   end
 
@@ -22,6 +27,13 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    p = params.require(:user).permit(:email, :password, :password_confirmation, :credits, :code).merge(credits: 1000)
+    p.delete(:code)
+    return p
+  end
+
+  def verify_access_code
+    expected_access_code = Digest::SHA256.hexdigest("#{params[:email]}#{ENV['SALT']}")
+    return params[:access_code] != expected_access_code
   end
 end

@@ -33,28 +33,27 @@ class Api::V1::QuestionsController < ApplicationController
 
   def answer
     @document = Document.find(params[:id])
-
     # get a random question
     @question = @document.questions.sample
     puts @question.text
     puts @question.answer
-    # need to add 11labs api call here
+    sleep 2 # simulate thinking
+    # add 11labs api call here
     # and add ask count
     render json: @question, status: 200
   end
 
   def ask
+    @user = current_user
     @document = Document.find(params[:id])
     text = params[:question]
 
     @question = @document.questions.find_by(text: text)
     if !@question.nil?
-      sleep 2
+      sleep 2 # simulate thinking
       render json: @question, status: 200
       return
     end
-
-    start_time = Time.now
 
     ada = get_embedding(text)
     if ada.nil?
@@ -63,12 +62,12 @@ class Api::V1::QuestionsController < ApplicationController
       return
     end
 
+    # cost = ada["usage"]["total_tokens"] * 0.0004 / 1000
+    # maybe add credit update, but honestly it would be so had to run out of credits via this
+    # speed hit literally wouldn't be worth it
+
     embedding = ada["data"][0]["embedding"]
     embedding = Numo::DFloat.cast(embedding)
-
-    puts "embedding time: #{Time.now - start_time}"
-    lap = Time.now
-    puts "getting projection"
 
     # project
     mean = Rails.cache.fetch(@document.id.to_s + "_mean", expires_in: 1.day) do
@@ -84,20 +83,12 @@ class Api::V1::QuestionsController < ApplicationController
       Numo::DFloat.cast(parsed)
     end
 
-    dequestioner
-
-    puts "loading time: #{Time.now - lap}"
-
     projected = (embedding - mean).dot(transformer.transpose)
 
     if @document.question_weights.length > 0
       puts "getting weights"
       projected[dequestioner] = 0
     end
-
-    puts "projection time: #{Time.now - lap}"
-    lap = Time.now
-    puts "getting nearest"
 
     filename = @document.id.to_s + ".ann"
     path = Rails.root.join("storage", "index", filename)
@@ -112,18 +103,9 @@ class Api::V1::QuestionsController < ApplicationController
 
     puts results.join(", ")
 
-    puts "search time: #{Time.now - lap}"
-    lap = Time.now
-    puts "getting completion"
-
     completion = get_chat_completion(labels.to_json, text)
 
-    puts "completion time: #{Time.now - lap}"
-    lap = Time.now
-
     @question = @document.questions.create(text: text, answer: completion, embedding: embedding.to_a)
-
-    puts "total time: #{Time.now - start_time}"
 
     render json: @question, status: 200
   end

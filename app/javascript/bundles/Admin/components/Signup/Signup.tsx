@@ -52,6 +52,14 @@ const Signup = () => {
                 type="password"
               />
             </label>
+            <label htmlFor="code">
+              <input
+                id="code"
+                placeholder="your access code"
+                name="user[code]"
+                type="password"
+              />
+            </label>
           </div>
           <button type="submit">Submit</button>
           <Link to="/auth/login" className="subtle">
