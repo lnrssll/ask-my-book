@@ -36,7 +36,7 @@ class Api::V1::DocumentsController < ApplicationController
   def update
     @user = current_user
     @document = @user.documents.find(params[:id])
-    if @document.ready?
+    if !@document.ready?
       if @document.trees.present?
         question = "what is #{@document.title} about?"
         @document.update(ready: true, default_question: question)
