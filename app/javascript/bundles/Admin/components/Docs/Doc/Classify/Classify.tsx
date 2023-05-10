@@ -14,6 +14,8 @@ export const classifyAction: ActionFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to classify doc");
+  return res;
 };
 
 const Classify = ({ weights }: { weights: number[] }) => {

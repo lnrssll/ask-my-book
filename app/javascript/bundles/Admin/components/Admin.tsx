@@ -18,6 +18,8 @@ export const adminLoader = async () => {
     } else {
       return redirect("/auth/login");
     }
+  } else {
+    return redirect("/auth/login");
   }
 };
 

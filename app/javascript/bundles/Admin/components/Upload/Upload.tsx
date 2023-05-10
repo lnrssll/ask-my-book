@@ -19,6 +19,9 @@ export const uploadAction: ActionFunction = async ({ request }) => {
   });
   if (res.ok) {
     return redirect("/admin/docs");
+  } else {
+    alert("Upload error");
+    return redirect("/admin/docs");
   }
 };
 

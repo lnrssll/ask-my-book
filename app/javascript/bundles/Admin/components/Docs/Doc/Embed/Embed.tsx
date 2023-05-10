@@ -15,6 +15,8 @@ export const embedAction: ActionFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to embed doc");
+  return res;
 };
 
 const Embed = () => {

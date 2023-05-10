@@ -16,6 +16,8 @@ export const searchAction: ActionFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to search");
+  return res;
 };
 
 const Search = () => {

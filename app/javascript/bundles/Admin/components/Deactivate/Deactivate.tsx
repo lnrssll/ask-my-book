@@ -15,6 +15,8 @@ export const deactivateAction: ActionFunction = async () => {
   if (res.ok) {
     return redirect("/auth/signup");
   }
+  alert("Deactivation failed");
+  return redirect("/admin");
 };
 
 const Deactivate = () => {

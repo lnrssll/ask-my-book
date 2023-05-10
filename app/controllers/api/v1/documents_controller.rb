@@ -125,12 +125,10 @@ class Api::V1::DocumentsController < ApplicationController
         total_tokens = ada["usage"]["total_tokens"]
         cost += total_tokens * 0.0004 / 1000
         embedding = ada["data"][0]["embedding"]
-        puts "success"
         chunk.update(embedding: embedding)
       end
     end
     @user.update(credits: @user.credits - cost)
-    puts "checking for completion"
     embedded = !@document.chunks.any? { |chunk| chunk.embedding.length == 0 }
     @document.update(embedded: embedded)
     render json: { message: "embedding complete" }, status: 200

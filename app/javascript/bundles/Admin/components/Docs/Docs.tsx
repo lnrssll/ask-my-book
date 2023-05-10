@@ -16,6 +16,8 @@ export const docsLoader: LoaderFunction = async () => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to load docs");
+  return res;
 };
 
 export interface DocType {

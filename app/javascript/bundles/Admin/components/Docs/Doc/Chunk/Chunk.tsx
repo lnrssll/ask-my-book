@@ -15,6 +15,8 @@ export const chunkAction: ActionFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to chunk doc");
+  return res;
 };
 
 const Chunk = () => {

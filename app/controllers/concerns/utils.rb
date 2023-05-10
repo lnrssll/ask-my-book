@@ -32,7 +32,6 @@ module Utils
 
   def get_embedding(text)
     url = URI("https://api.openai.com/v1/embeddings")
-    puts "calling openai ada"
     headers = {
       "Content-Type" => "application/json",
       "Authorization" => "Bearer #{ENV['OPENAI_API_KEY']}",
@@ -85,7 +84,6 @@ module Utils
       parsed = JSON.parse(response.body)
       cost = parsed["usage"]["total_tokens"] * 0.002 / 1000
       @user.update(credits: @user.credits - cost)
-      puts parsed
       return parsed["choices"][0]["message"]["content"]
     else
       puts response.body

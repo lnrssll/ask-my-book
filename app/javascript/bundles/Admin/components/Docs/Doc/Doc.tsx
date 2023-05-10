@@ -29,6 +29,8 @@ export const docLoader: LoaderFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to load doc");
+  return res;
 };
 
 export const docAction: ActionFunction = async ({ request, params }) => {

@@ -18,6 +18,8 @@ export const questionAction: ActionFunction = async ({ request, params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to delete question");
+  return res;
 };
 
 const Question = ({ question }: { question: QuestionType }) => {

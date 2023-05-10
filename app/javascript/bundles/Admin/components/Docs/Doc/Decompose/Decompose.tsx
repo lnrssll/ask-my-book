@@ -15,6 +15,8 @@ export const decomposeAction: ActionFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to decompose doc");
+  return res;
 };
 
 const Decompose = () => {

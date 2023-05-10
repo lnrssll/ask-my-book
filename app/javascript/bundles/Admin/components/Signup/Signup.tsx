@@ -17,6 +17,8 @@ export const signupAction: ActionFunction = async ({ request }) => {
   if (res.ok) {
     return redirect("/auth/login");
   }
+  alert("Invalid access code");
+  return redirect("/auth/signup");
 };
 
 const Signup = () => {

@@ -32,6 +32,8 @@ export const questionsAction: ActionFunction = async ({ request, params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to load questions");
+  return res;
 };
 
 export interface QuestionType {

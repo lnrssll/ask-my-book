@@ -15,6 +15,8 @@ export const buildAction: ActionFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
+  alert("Failed to build doc");
+  return res;
 };
 
 const Build = () => {
