@@ -106,7 +106,7 @@ const Upload = () => {
                 name="document[description]"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Description..."
+                placeholder="Description... (this will be added by AI if left blank)"
               />
             </label>
             <div className={style.preview}>

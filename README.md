@@ -2,7 +2,9 @@
 
 ## Notes
 
-Full functionality (and then some, explained below), without styling or deployment.
+Deployed to AWS: [here](http://44.234.84.19) (no SSL or DNS, just an HTTP to the IP)
+
+You'll need an access code (from me) to sign up there, because my OpenAI API key is used for all the API requests, and I of course don't want anyone using that...
 
 * Ruby version
     * 3.2.2
@@ -19,7 +21,11 @@ Full functionality (and then some, explained below), without styling or deployme
     * rails db:create
 
 * Deployment instructions
-    * TBD
+    * Deploy EC2 (ideally over 16GB of storage, multiple cores) instance with Nginx and Docker installed
+    * set up Nginx proxy from default port 80 to port 3000 (and you'll need to set `client_max_body_size 10m;` and `proxy_read_timeout 1000s` in your nginx.conf)
+    * clone the repo and cd into it
+    * set ENV variables (explained below)
+    * start the server with `docker-compose build && docker-compose up` (docker-compose.yml does most of the heavy lifting here)
 
 ## Architecture
 
@@ -72,3 +78,57 @@ Finally, I use the system message to present the prompt and source content, beca
 ### Further Improvements
 
 Rather than caching plaintext queries that have already been answered, which only works if two users ask the *exact* same question verbatim, an obvious improvement would be to use a similarity threshold to identify similar cached questions. Of course, you don't want to answer *the wrong* similar question or recite an answer whose grammatical formulation doesn't match the question (initial query: "Is it raining today?"; matched query: "Is it not raining today?"; cached answer: "yes"). To solve this, while still saving API usage costs, similar but-not-identical queries could be answered without any vector-matched context, using only the cached question and answer as context. Similar questions should have similar answers, or at least use similar context compression. Based on my own experimentation, this should be pretty successful with a 0.95 threshold for similarity.
+
+## How To Use
+
+### Normal user
+
+When you go to the home URL, you will see a list of books that have been "published" to the site. If you click on this (or the "user+" icon), you will be redirected to the login screen.
+
+Choose to sign up, and use your access code to create an account, then use that account to log in.
+
+Now, you will be able to click on one of the published books and ask it questions (every account defaults to have $10 of openai credits)
+
+To logout or deactivate, just click the "user-" icon in the bottom right corner.
+
+### Admin
+
+After logging in, you'll see a "toolkit" icon in the bottom left corner of the screen. Click this to enter the admin panel.
+
+Here, you'll see an option to upload a document. You can click on this, select a file, and a preview will be rendered on-screen. Use this preview and the page navigation tools to select the start- and end-pages of your document for the embedding (e.g. skip table of contents, glossary  etc.). The title will be generated from the file name, but you'll have to fill out the author manually. The description will be generated automatically by the AI after preprocessing as an answer to the question "What is #{book.title} about?".
+
+After uploading completes, you'll see a series of build steps. They may take a while, but sit tight: they'll only take a few minutes for any normal-length book. The slowest part is the embeddings API calling, by far.
+
+![progress](images/progress.jpeg)
+
+Once you've completed all the pre-processing steps, you'll want to add some questions by clicking on the "questions" button. Once you've added (let's say 10) questions, you can "embed" them, then "classify" (train the linear SVC).
+
+You can also test the vector search on the "Test" page
+
+Once you've created your classification, click "Go Live", and the Book will appear for all users (including you) when you go back to the normal view (the "home" icon)
+
+At any time, you can navigate back to the main admin menu by clicking on the words "Admin Panel" in the top left.
+
+## Deployment
+
+Though I was hoping to submit this the same day I build it (Sunday), the OpenBLAS dependency for my linear algebra library meant that Heroku one-click deployment heaven was out of reach. So I decided to dockerize the project and deploy it to AWS instead. This should also make it much easier to run my code on your own machine, as an added bonus. Unfortunately, latest rails has several [issues](https://github.com/rails/rails/issues/32947) with docker deployments, so I had to update to edge rails (7.1) after a nice, long debugging deep dive. Nonetheless, here we are!
+
+### ENV variables
+
+RAILS_ENV=production
+
+POSTGRES_HOST=db
+
+POSTGRES_DB=ask_my_book_production
+
+POSTGRES_USERNAME=askmybook
+
+POSTGRES_PASSWORD=[your password]
+
+RAILS_MASTER_KEY=[your master key, in config/master.key]
+
+SALT=[some secret]
+
+OPENAI_API_KEY=[your api key, starts with sk-]
+
+for secret generation (db password and salt), I'd suggest: `openssl rand -base64 16 | tr -dc 'a-zA-Z0-9' | xclip -selection clipboard`

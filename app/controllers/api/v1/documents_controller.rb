@@ -38,7 +38,8 @@ class Api::V1::DocumentsController < ApplicationController
     @document = @user.documents.find(params[:id])
     if @document.ready?
       if @document.trees.present?
-        @document.update(ready: true)
+        question = "what is #{@document.title} about?"
+        @document.update(ready: true, default_question: question)
         render json: { message: "Document ready" }, status: 200
       else
         render json: { message: "Document not ready to go live" }, status: 200

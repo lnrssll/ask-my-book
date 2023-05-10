@@ -106,6 +106,9 @@ class Api::V1::QuestionsController < ApplicationController
     completion = get_chat_completion(labels.to_json, text)
 
     @question = @document.questions.create(text: text, answer: completion, embedding: embedding.to_a)
+    if text.strip == @document.default_question.strip && @document.description.empty?
+      @document.update(description: completion)
+    end
 
     render json: @question, status: 200
   end
