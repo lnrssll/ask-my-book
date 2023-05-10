@@ -210,7 +210,7 @@ class Api::V1::DocumentsController < ApplicationController
     @document = @user.documents.find(params[:id])
     filename = @document.id.to_s + ".ann"
 
-    path = Rails.root.join("storage", "index", filename)
+    path = Rails.root.join("storage", filename)
     dimensions = @document.components
 
     trees = 50
@@ -277,7 +277,7 @@ class Api::V1::DocumentsController < ApplicationController
     item = chunks_ids.sample
 
     filename = @document.id.to_s + ".ann"
-    path = Rails.root.join("storage", "index", filename)
+    path = Rails.root.join("storage", filename)
 
     neighbors = 10
 
