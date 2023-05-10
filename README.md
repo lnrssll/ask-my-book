@@ -97,6 +97,8 @@ After logging in, you'll see a "toolkit" icon in the bottom left corner of the s
 
 Here, you'll see an option to upload a document. You can click on this, select a file, and a preview will be rendered on-screen. Use this preview and the page navigation tools to select the start- and end-pages of your document for the embedding (e.g. skip table of contents, glossary  etc.). The title will be generated from the file name, but you'll have to fill out the author manually. The description will be generated automatically by the AI after preprocessing as an answer to the question "What is #{book.title} about?".
 
+![upload](images/upload.jpeg)
+
 After uploading completes, you'll see a series of build steps. They may take a while, but sit tight: they'll only take a few minutes for any normal-length book. The slowest part is the embeddings API calling, by far.
 
 ![progress](images/progress.jpeg)
