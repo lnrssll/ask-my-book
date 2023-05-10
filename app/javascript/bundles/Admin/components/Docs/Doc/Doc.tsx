@@ -99,7 +99,7 @@ const DocView = () => {
           <div>Uploaded {moment(created_at).fromNow()}</div>
         </div>
       </div>
-      {description && <div className="subtle">{description}</div>}
+      {description && <div className="fit subtle">{description}</div>}
       {trees && progress > 3 ? (
         <div>
           <div className="horizontal">

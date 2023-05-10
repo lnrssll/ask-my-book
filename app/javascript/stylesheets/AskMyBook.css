@@ -95,6 +95,10 @@ label {
   font-weight: bold;
 }
 
+.left {
+  align-items: flex-start;
+}
+
 .subtle {
   color: #483c32;
   opacity: 0.8;

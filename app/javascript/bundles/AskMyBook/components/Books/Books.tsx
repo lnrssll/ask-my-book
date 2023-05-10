@@ -27,7 +27,7 @@ const Books = () => {
   const books = useLoaderData() as BookType[];
 
   return (
-    <div className="flexbox">
+    <div className="flexbox fit left">
       {!!books.length &&
         books.map((book) => (
           <Link to={`questions/${book.id}`} key={book.id}>
