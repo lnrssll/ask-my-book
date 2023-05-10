@@ -42,14 +42,22 @@ const Embed = () => {
       <div className="subtle centered">
         {embedded ? chunkCount + " chunks embedded" : "Not embedded"}
       </div>
-      <button
-        type="submit"
-        style={{ opacity: "50%" }}
-        disabled
-        className="no-cursor no-shadow danger"
-      >
-        No Action
-      </button>
+      {embedded ? (
+        <button
+          type="submit"
+          style={{ opacity: "50%" }}
+          disabled
+          className="no-cursor no-shadow danger"
+        >
+          No Action
+        </button>
+      ) : (
+        <fetcher.Form method="POST" action={`/admin/docs/${id}/embed`}>
+          <button type="submit" className="danger">
+            Retry
+          </button>
+        </fetcher.Form>
+      )}
     </div>
   );
 };
