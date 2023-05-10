@@ -111,6 +111,10 @@ Once you've created your classification, click "Go Live", and the Book will appe
 
 At any time, you can navigate back to the main admin menu by clicking on the words "Admin Panel" in the top left.
 
+### Known Issues
+
+There is a small CSRF token bug that requires you to refresh the page after signing out in order to sign back in.
+
 ## Deployment
 
 Though I was hoping to submit this the same day I build it (Sunday), the OpenBLAS dependency for my linear algebra library meant that Heroku one-click deployment heaven was out of reach. So I decided to dockerize the project and deploy it to AWS instead. This should also make it much easier to run my code on your own machine, as an added bonus. Unfortunately, latest rails has several [issues](https://github.com/rails/rails/issues/32947) with docker deployments, so I had to update to edge rails (7.1) after a nice, long debugging deep dive. Nonetheless, here we are!
