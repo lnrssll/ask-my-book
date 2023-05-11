@@ -1,5 +1,7 @@
 # Ask My Book
 
+Ruby on Rails application that accepts a PDF eBook, parses and vectorizes its content, then offers context-aware, ChatGPT-powered Q&A
+
 ## Notes
 
 Deployed to AWS: [here](http://44.234.84.19) (no SSL or DNS, just an HTTP to the IP)
