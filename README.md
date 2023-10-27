@@ -8,6 +8,8 @@ Deployed to AWS: [here](http://44.234.84.19) (no SSL or DNS, just an HTTP to the
 
 You'll need an access code (from me) to sign up there, because my OpenAI API key is used for all the API requests, and I of course don't want anyone using that...
 
+However, this repo can be used to self-host with your own OpenAI API key.
+
 * Ruby version
     * 3.2.2
 
@@ -37,7 +39,7 @@ I elected to use Shakapacker's [React on Rails](https://github.com/shakacode/rea
 
 I didn't adhere precisely to the original project, on both the client and server side. My methodology for computing neighbors is very different, and, in order to give users fine-grained control over the parameters I use on the server, it felt necessary to really deep dive into the process in an admin panel. I also don't want just anybody using my OpenAI credits in deployment, so I added user auth to *both* the admin panel and the regular user interface. The user interface also has one additional layer: a menu for books. This is because I wanted to demonstrate the application's ability to work across many books. After selecting a book, you are brought to a familiar page, akin to the [askmybook.com](askmybook.com) homepage.
 
-Since I was planning to complete this in a Sunday, the admin panel currently has basically zero styling beyond what is minimally needed for functionality. I primarily wanted my UX features (but not necessarily *style*) and architecture to speak for the project, because I know Gumroad already has its own library of styles. For proof that I can actually implement styles, check out [this website](https://edcred.vercel.app) with next/react/redux, which follows an existing style formula, or [this client-only website](https://edbed.net) with react, which I designed from scratch (with some assets created by a friend). These websites are both incomplete/stealth with respect to content and prod readiness, but they are usable for demonstration purposes.
+Since this project was built in 4 days, the admin panel currently has basically zero styling beyond what is minimally needed for functionality (and my own perfectionism/OCD). I primarily wanted my UX features (but not necessarily *style*) and architecture to speak for the project, because I know Gumroad already has its own library of styles. For proof that I can actually implement styles, check out [this website](https://edcred.vercel.app) with next/react/redux, which follows an existing style formula, or [this client-only website](https://edbed.net) with react, which I designed from scratch (with some pixel art assets created by a friend). These websites are both incomplete/stealth with respect to content and prod readiness, but they are usable for demonstration purposes.
 
 ### Approximate Nearest Neighbors
 
@@ -101,7 +103,7 @@ Here, you'll see an option to upload a document. You can click on this, select a
 
 ![upload](images/upload.jpeg)
 
-After uploading completes, you'll see a series of build steps. They may take a while, but sit tight: they'll only take a few minutes for any normal-length book. The slowest part is the embeddings API calling, by far.
+After uploading completes, you'll see a series of build steps. They may take a while, but sit tight: they'll only take a few minutes for any normal-length book. The slowest part is the embeddings API calling, by far. (with more time, I'd implement my own with an E5 backend, saving a lot of time/money with basically no performance hit but with the caveat that it requires a GPU)
 
 ![progress](images/progress.jpeg)
 
@@ -119,7 +121,7 @@ There is a small CSRF token bug that requires you to refresh the page after sign
 
 ## Deployment
 
-Though I was hoping to submit this the same day I build it (Sunday), the OpenBLAS dependency for my linear algebra library meant that Heroku one-click deployment heaven was out of reach. So I decided to dockerize the project and deploy it to AWS instead. This should also make it much easier to run my code on your own machine, as an added bonus. Unfortunately, latest rails has several [issues](https://github.com/rails/rails/issues/32947) with docker deployments, so I had to update to edge rails (7.1) after a nice, long debugging deep dive. Nonetheless, here we are!
+Though I was hoping to deploy with Heroku (common for these types of Ruby apps), the OpenBLAS dependency for my linear algebra library meant that Heroku one-click deployment heaven was out of reach. So I decided to dockerize the project and deploy it to AWS instead. This should also make it much easier to run my code on your own machine, as an added bonus. Unfortunately, latest rails has several [issues](https://github.com/rails/rails/issues/32947) with docker deployments, so I had to update to edge rails (7.1) after a nice, long debugging deep dive. Nonetheless, here we are!
 
 ### ENV variables
 
