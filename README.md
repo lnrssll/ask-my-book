@@ -4,9 +4,11 @@ Ruby on Rails application that accepts a PDF eBook, parses and vectorizes its co
 
 ## Notes
 
-Deployed to AWS: [here](http://44.234.84.19) (no SSL or DNS, just an HTTP to the IP)
+Deployed to AWS: [here](https://34.222.176.226) (no DNS, just straight to the IP, and the SSL certificate is self-signed, by me, so your browser will give you warnings which you can safely ignore by choosing "Advanced Options")
 
 You'll need an access code (from me) to sign up there, because my OpenAI API key is used for all the API requests, and I of course don't want anyone using that...
+
+I'd recommend using your access code as a password too, so that you don't reuse passwords from other sites (your pw isn't stored in plaintext, but this is still good practice, but a better practice would be to just use a pw manager like 1password)
 
 However, this repo can be used to self-host with your own OpenAI API key.
 
