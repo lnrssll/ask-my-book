@@ -4,7 +4,7 @@ Ruby on Rails application that accepts a PDF eBook, parses and vectorizes its co
 
 ## Notes
 
-Deployed to AWS: [here](https://34.222.176.226) (no DNS, just straight to the IP, and the SSL certificate is self-signed, by me, so your browser will give you warnings which you can safely ignore by choosing "Advanced Options")
+Deployed to my self-hosted home server: [askbooks.lnrssll.com](https://askbooks.lnrssll.com).
 
 You'll need an access code (from me) to sign up there, because my OpenAI API key is used for all the API requests, and I of course don't want anyone using that...
 
@@ -32,6 +32,7 @@ However, this repo can be used to self-host with your own OpenAI API key.
     * clone the repo and cd into it
     * set ENV variables (explained below)
     * start the server with `docker-compose build && docker-compose up` (docker-compose.yml does most of the heavy lifting here)
+        * note: you may need to run `docker compose build && docker compose up -d`, depending on how you've installed Docker Compose (`-d` stands for "detach" and runs the server in the background, with realtime logs available at `docker logs -f`)
 
 ## Architecture
 
@@ -125,7 +126,7 @@ For very large books (more than ~300 pages), you may need to "Retry" the embeddi
 
 ## Deployment
 
-Though I was hoping to deploy with Heroku (common for these types of Ruby apps), the OpenBLAS dependency for my linear algebra library meant that Heroku one-click deployment heaven was out of reach. So I decided to dockerize the project and deploy it to AWS instead. This should also make it much easier to run my code on your own machine, as an added bonus. Unfortunately, latest rails has several [issues](https://github.com/rails/rails/issues/32947) with docker deployments, so I had to update to edge rails (7.1) after a nice, long debugging deep dive. Nonetheless, here we are!
+Though I was hoping to deploy with Heroku (common for these types of Ruby apps), the OpenBLAS dependency for my linear algebra library meant that Heroku one-click deployment heaven was out of reach. So I decided to dockerize the project and deploy it to AWS (update: the site has been moved to my homelab server) instead. This should also make it much easier to run my code on your own machine, as an added bonus. Unfortunately, latest rails has several [issues](https://github.com/rails/rails/issues/32947) with docker deployments, so I had to update to edge rails (7.1) after a nice, long debugging deep dive. Nonetheless, here we are!
 
 ### ENV variables
 
@@ -146,3 +147,5 @@ SALT=[some secret]
 OPENAI_API_KEY=[your api key, starts with sk-]
 
 for secret generation (db password and salt), I'd suggest: `openssl rand -base64 16 | tr -dc 'a-zA-Z0-9' | xclip -selection clipboard`
+
+To generate access tokens for specific email addresses, you can use the `gen-access-token.sh` script in the root directory.
