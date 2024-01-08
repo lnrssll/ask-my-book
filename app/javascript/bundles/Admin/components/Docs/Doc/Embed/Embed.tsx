@@ -15,7 +15,7 @@ export const embedAction: ActionFunction = async ({ params }) => {
   if (res.ok) {
     return res;
   }
-  alert("Failed to embed doc");
+  alert("Failed to embed doc. This is likely a 524 cloudflare limitation. Please resume embedding by selecting 'retry'");
   return res;
 };
 

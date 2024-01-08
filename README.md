@@ -121,6 +121,8 @@ At any time, you can navigate back to the main admin menu by clicking on the wor
 
 There is a small CSRF token bug that requires you to refresh the page after signing out in order to sign back in.
 
+For very large books (more than ~300 pages), you may need to "Retry" the embedding process a few times. This is due to a cloudflare limitation on request timeouts beyond 100 seconds, leading to a 524 error (which you can confirm in the browser developer console). Just close the alert and retry until the embeddings are complete. If you see that the chunking process has yielded >1000 chunks, you can expect the embedding process to be quite slow.
+
 ## Deployment
 
 Though I was hoping to deploy with Heroku (common for these types of Ruby apps), the OpenBLAS dependency for my linear algebra library meant that Heroku one-click deployment heaven was out of reach. So I decided to dockerize the project and deploy it to AWS instead. This should also make it much easier to run my code on your own machine, as an added bonus. Unfortunately, latest rails has several [issues](https://github.com/rails/rails/issues/32947) with docker deployments, so I had to update to edge rails (7.1) after a nice, long debugging deep dive. Nonetheless, here we are!

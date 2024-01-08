@@ -20,7 +20,7 @@ export const uploadAction: ActionFunction = async ({ request }) => {
   if (res.ok) {
     return redirect("/admin/docs");
   } else {
-    alert("Upload error");
+    alert("Upload error, file may be too large.");
     return redirect("/admin/docs");
   }
 };

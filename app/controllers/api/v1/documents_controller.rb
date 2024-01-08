@@ -118,11 +118,12 @@ class Api::V1::DocumentsController < ApplicationController
     @document.chunks.each do |chunk|
       if chunk.embedding.length == 0
         ada = get_embedding(chunk.content)
-        if ada == nil
-          puts "embedding failed"
-          render json: { error: "embedding failed" }, status: 500
-          return
-        end
+        next if ada.nil?
+        # if ada == nil
+        #   puts "embedding failed"
+        #   render json: { error: "embedding failed" }, status: 500
+        #   return
+        # end
         total_tokens = ada["usage"]["total_tokens"]
         cost += total_tokens * 0.0004 * 100 / 1000
         embedding = ada["data"][0]["embedding"]
@@ -131,8 +132,12 @@ class Api::V1::DocumentsController < ApplicationController
     end
     @user.update(credits: @user.credits - cost.ceil)
     embedded = !@document.chunks.any? { |chunk| chunk.embedding.length == 0 }
-    @document.update(embedded: embedded)
-    render json: { message: "embedding complete" }, status: 200
+    if embedded
+      @document.update(embedded: embedded)
+      render json: { message: "embedding complete" }, status: 200
+    else # some chunks not embedded
+      render json: { message: "Embedding incomplete. This is likely an error in the OpenAI API. Please try again to complete the last few embeddings." }, status: 500
+    end
   end
 
   def decompose
